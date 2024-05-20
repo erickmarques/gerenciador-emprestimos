@@ -26,6 +26,7 @@ public class Utils {
     public static final String OBS_BENEF          = "Observação de teste";
 
     public static final String ID_INVALIDO        = "abc";
+    public static final Long ID_INEXISTENTE       = 99999L;
  
     public static Beneficiario criarBeneficiario(){
         Beneficiario beneficiario = new Beneficiario();

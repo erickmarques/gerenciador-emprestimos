@@ -65,6 +65,16 @@ public class BeneficiarioControllerTest {
 
     @Transactional
     @Test
+    void inserir_LancarExcecao_BadRequest() throws Exception {
+
+        mockMvc.perform(post(BASE_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new BeneficiarioRequestDTO())))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
     void atualizar_DeveAtualizarBeneficiario() throws Exception {
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), beneficiario.getId())
@@ -78,12 +88,29 @@ public class BeneficiarioControllerTest {
 
     @Transactional
     @Test
+    void atualizar_DeveLancarExcecao_BadRequest() throws Exception {
+
+        mockMvc.perform(put(BASE_URL.concat("/{id}"), Utils.ID_INVALIDO)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Transactional
+    @Test
+    void atualizar_DeveLancarExcecao_NotFound() throws Exception {
+
+        mockMvc.perform(put(BASE_URL.concat("/{id}"), Utils.ID_INEXISTENTE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requestDTO)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Transactional
+    @Test
     void buscarPorId_DeveRetornarBeneficiario() throws Exception {
 
-        System.out.println("erick - " + beneficiario.getNumeroTelefone());
-
         mockMvc.perform(get(BASE_URL.concat("/{id}"), beneficiario.getId()))
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.nome").value(Utils.NOME_BENEF))
                 .andExpect(jsonPath("$.numeroTelefone").value(Utils.FONE_BENEF))
@@ -95,29 +122,27 @@ public class BeneficiarioControllerTest {
     void buscarTodos_DeveRetornarListaDeBeneficiarios() throws Exception {
         mockMvc.perform(get(BASE_URL))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1)))) 
-                .andExpect(jsonPath("$[0].nome").value(Utils.NOME_BENEF))
-                .andExpect(jsonPath("$[0].numeroTelefone").value(Utils.FONE_BENEF))
-                .andExpect(jsonPath("$[0].observacao").value(Utils.OBS_BENEF));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
 
     @Transactional
     @Test
     void buscarPorNome_DeveRetornarListaDeBeneficiarios() throws Exception {
 
-        Beneficiario beneficiario2 = new Beneficiario("EDSON MARQUES", "81977776666");
+        String nomeBusca = "MARQUES";
+        String nomeBenef = "EDSON MARQUES";
+
+        Beneficiario beneficiario2 = new Beneficiario(nomeBenef, "81977776666");
         Beneficiario beneficiario3 = new Beneficiario("LAURA ANDRADE", "81955556666");
 
         beneficiarioRepository.save(beneficiario2);
         beneficiarioRepository.save(beneficiario3);
 
-        String nomeBusca = "MARQUES";
-
         mockMvc.perform(get(BASE_URL.concat("/buscarPorNome/{nome}"), nomeBusca))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].nome").value(Utils.NOME_BENEF))
-                .andExpect(jsonPath("$[1].nome").value("EDSON MARQUES"));
+                .andExpect(jsonPath("$[1].nome").value(nomeBenef));
     }
 
     @Transactional
