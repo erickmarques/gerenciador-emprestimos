@@ -17,10 +17,10 @@ import lombok.NoArgsConstructor;
 public class EmprestimoRequestDTO {
 
     @NotNull(message = "{emprestimo.dataEmprestimo.naoNulo}")
-    private LocalDateTime dataEmprestimo;
+    private String dataEmprestimo;
 
     @NotNull(message = "{emprestimo.dataEmprestimo.naoNulo}")
-    private LocalDateTime dataPagamento;
+    private String dataPagamento;
 
     @Positive(message = "{emprestimo.valorEmprestimo.positive}")
     @NotNull(message = "{emprestimo.valorEmprestimo.naoNulo}")
