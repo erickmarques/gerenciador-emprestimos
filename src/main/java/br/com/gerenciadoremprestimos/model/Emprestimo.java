@@ -29,29 +29,22 @@ public class Emprestimo extends Base {
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull(message = "{emprestimo.dataEmprestimo.naoNulo}")
     @Column(name = "data_emprestimo", nullable = false)
     private LocalDateTime dataEmprestimo;
 
     @Column(name = "data_pagamento", nullable = false)
     private LocalDateTime dataPagamento;
 
-    @NotNull(message = "{emprestimo.valorEmprestimo.naoNulo}")
-    @Positive(message = "{emprestimo.valorEmprestimo.positive}")
     @Column(name = "valor_emprestimo", nullable = false)
     private Double valorEmprestimo;
 
-    @NotNull(message = "{emprestimo.porcentagem.naoNulo}")
-    @PositiveOrZero(message = "{emprestimo.porcentagem.positivoOuZero}")
     @Column(name = "porcentagem", nullable = false)
     private Double porcentagem;
 
-    @NotNull(message = "{emprestimo.quitado.naoNulo}")
     @Column(name = "quitado", nullable = false)
     private Boolean quitado;
 
     @ManyToOne
     @JoinColumn(name = "beneficiario_id", nullable = false)
-    @NotNull(message = "{emprestimo.beneficiario.naoNulo}")
     private Beneficiario beneficiario;
 }

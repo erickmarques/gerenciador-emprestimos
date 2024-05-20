@@ -21,6 +21,8 @@ import lombok.ToString;
 @Table(name = "beneficiario", schema = "public")
 public class Beneficiario extends Base {
 
+    private static final long serialVersionUID = 1L;
+
     @Column(name = "nome", nullable = false)
     private String nome;
 
