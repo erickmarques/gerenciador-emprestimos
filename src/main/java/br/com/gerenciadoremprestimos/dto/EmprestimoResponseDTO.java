@@ -1,6 +1,8 @@
 package br.com.gerenciadoremprestimos.dto;
 
 import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -9,18 +11,18 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Representa um DTO de requisiçao (insert/update) da entidade Empréstimo.
+ * Representa um DTO de requisiçao (GET) da entidade Empréstimo.
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmprestimoRequestDTO {
+public class EmprestimoResponseDTO {
 
-    @NotNull(message = "{emprestimo.dataEmprestimo.naoNulo}")
-    private LocalDateTime dataEmprestimo;
+    @NotEmpty(message = "{emprestimo.dataEmprestimo.naoNulo}")
+    private String dataEmprestimo;
 
-    @NotNull(message = "{emprestimo.dataEmprestimo.naoNulo}")
-    private LocalDateTime dataPagamento;
+    @NotEmpty(message = "{emprestimo.dataEmprestimo.naoNulo}")
+    private String dataPagamento;
 
     @Positive(message = "{emprestimo.valorEmprestimo.positive}")
     @NotNull(message = "{emprestimo.valorEmprestimo.naoNulo}")
