@@ -71,7 +71,7 @@ public class EmprestimoService {
         return emprestimoMapper.paraDto(emprestimo);
     }
 
-    private void validarId(String id){
+    public void validarId(String id){
         if (!Utils.contemApenasNumeros(id)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, obterMensagem("emprestimo.idInvalido", id));
         }

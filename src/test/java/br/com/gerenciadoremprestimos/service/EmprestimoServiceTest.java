@@ -19,11 +19,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Locale;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,5 +89,70 @@ class EmprestimoServiceTest {
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
         assertEquals(mensagemErro, exception.getReason());
         verify(emprestimoRepository, never()).save(any());
+    }
+
+    @Test
+    void atualizar_DeveAtualizarEmprestimo() {
+        String id = "1";
+        when(emprestimoRepository.findById(Long.valueOf(id))).thenReturn(Optional.of(emprestimo));
+        when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class))).thenReturn(emprestimo);
+        when(emprestimoMapper.paraDto(any())).thenReturn(responseDTO);
+        when(emprestimoRepository.save(any())).thenReturn(emprestimo);
+
+        EmprestimoResponseDTO result = emprestimoService.atualizar(id, requestDTO);
+
+        assertNotNull(result);
+        assertEquals(responseDTO, result);
+
+        verify(emprestimoRepository, times(1)).findById(Long.valueOf(id));
+        verify(emprestimoRepository, times(1)).save(emprestimo);
+    }
+
+    @Test
+    void atualizar_DeveLancarExcecaoQuandoIdInvalido() {
+        String id = "";
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.atualizar(id, requestDTO);
+        });
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verify(emprestimoRepository, never()).findById(any());
+        verify(emprestimoRepository, never()).save(any());
+    }
+
+    @Test
+    void atualizar_DeveLancarExcecaoQuandoEmprestimoNaoEncontrado() {
+        String mensagemErro = "Empréstimo não encontrado";
+        when(emprestimoRepository.findById(TestUtils.ID_INEXISTENTE)).thenReturn(Optional.empty());
+        when(messageSource.getMessage(eq("emprestimo.naoExiste"), any(Object[].class), any(Locale.class))).thenReturn(mensagemErro);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.atualizar(String.valueOf(TestUtils.ID_INEXISTENTE), requestDTO);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals(mensagemErro, exception.getReason());
+        verify(emprestimoRepository, times(1)).findById(TestUtils.ID_INEXISTENTE);
+        verify(emprestimoRepository, never()).save(any());
+    }
+
+
+    @Test
+    void atualizar_DeveLancarExcecaoQuandoErroAoSalvar() {
+        String id = "1";
+        String mensagemErro = "Erro ao salvar empréstimo";
+        when(emprestimoRepository.findById(Long.valueOf(id))).thenReturn(Optional.of(emprestimo));
+        when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class))).thenReturn(emprestimo);
+        doThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, mensagemErro)).when(emprestimoRepository).save(any());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.atualizar(id, requestDTO);
+        });
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
+        assertEquals(mensagemErro, exception.getReason());
+        verify(emprestimoRepository, times(1)).findById(Long.valueOf(id));
+        verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 }
