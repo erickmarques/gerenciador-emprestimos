@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Representa um DTO de requisiçao (GET) da entidade Empréstimo.
+ * Representa um DTO de retorno da entidade Empréstimo.
  */
 @Data
 @AllArgsConstructor
