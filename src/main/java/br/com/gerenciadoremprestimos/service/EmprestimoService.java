@@ -32,7 +32,7 @@ public class EmprestimoService {
     @Transactional
     public EmprestimoResponseDTO inserir(EmprestimoRequestDTO requestDTO) {
 
-        Beneficiario beneficiario = beneficiarioService.obterBeneficiario(String.valueOf(requestDTO.getBeneficiario()));
+        Beneficiario beneficiario = beneficiarioService.obterBeneficiario(String.valueOf(requestDTO.getBeneficiarioId()));
 
         Emprestimo emprestimo = emprestimoMapper.paraEntidade(requestDTO, beneficiario);
 
@@ -46,7 +46,7 @@ public class EmprestimoService {
 
         validarId(id);
 
-        Beneficiario beneficiario = beneficiarioService.obterBeneficiario(String.valueOf(requestDTO.getBeneficiario()));
+        Beneficiario beneficiario = beneficiarioService.obterBeneficiario(String.valueOf(requestDTO.getBeneficiarioId()));
         Emprestimo emprestimo     = obterEmprestimo(id);
         emprestimo                = emprestimoMapper.paraEntidadeAtualizar(emprestimo, requestDTO, beneficiario);
 
@@ -83,7 +83,7 @@ public class EmprestimoService {
         }
     }
 
-    private Emprestimo obterEmprestimo(String id){
+    public Emprestimo obterEmprestimo(String id){
         return emprestimoRepository.findById(Long.valueOf(id))
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, obterMensagem("emprestimo.naoExiste", id)));
     }
