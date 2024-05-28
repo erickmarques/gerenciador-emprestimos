@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDateTime;
 
-import br.com.gerenciadoremprestimos.Utils;
+import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.model.Pagamento;
@@ -34,18 +34,18 @@ public class PagamentoRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Beneficiario beneficiario = Utils.criarBeneficiario();
+        Beneficiario beneficiario = TestUtils.criarBeneficiario();
         beneficiarioRepository.save(beneficiario);
 
-        LocalDateTime dataEmprestimo = LocalDateTime.of(Utils.ANO, Utils.MES, 1, 0, 0);
-        emprestimo = Utils.criarEmprestimo(beneficiario, Utils.VALOR3000, Utils.PORCENTAGEM20, dataEmprestimo, dataEmprestimo.plusMonths(1), false);
+        LocalDateTime dataEmprestimo = LocalDateTime.of(TestUtils.ANO, TestUtils.MES, 1, 0, 0);
+        emprestimo = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR3000, TestUtils.PORCENTAGEM20, dataEmprestimo, dataEmprestimo.plusMonths(1), false);
         emprestimoRepository.save(emprestimo);
 
-        LocalDateTime dataPagamento1 = LocalDateTime.of(Utils.ANO, Utils.MES, 10, 0, 0);
-        LocalDateTime dataPagamento2 = LocalDateTime.of(Utils.ANO, Utils.MES, 20, 0, 0);
+        LocalDateTime dataPagamento1 = LocalDateTime.of(TestUtils.ANO, TestUtils.MES, 10, 0, 0);
+        LocalDateTime dataPagamento2 = LocalDateTime.of(TestUtils.ANO, TestUtils.MES, 20, 0, 0);
 
-        Pagamento pagamento1 = Utils.criarPagamento(emprestimo, Utils.VALOR1000, dataPagamento1, TipoPagamento.JUROS);
-        Pagamento pagamento2 = Utils.criarPagamento(emprestimo, Utils.VALOR2000, dataPagamento2, TipoPagamento.TOTAL);
+        Pagamento pagamento1 = TestUtils.criarPagamento(emprestimo, TestUtils.VALOR1000, dataPagamento1, TipoPagamento.JUROS);
+        Pagamento pagamento2 = TestUtils.criarPagamento(emprestimo, TestUtils.VALOR2000, dataPagamento2, TipoPagamento.TOTAL);
 
         pagamentoRepository.save(pagamento1);
         pagamentoRepository.save(pagamento2);
@@ -55,14 +55,14 @@ public class PagamentoRepositoryTest {
     public void valorTotalRecebidoPorEmprestimo_RetornaValorCorreto() {
         Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorEmprestimo(emprestimo);
         assertNotNull(totalRecebido, "O valor total recebido por empréstimo não deve ser nulo");
-        assertEquals(Utils.VALOR3000, totalRecebido, "O valor total recebido por empréstimo deve ser 3000");
+        assertEquals(TestUtils.VALOR3000, totalRecebido, "O valor total recebido por empréstimo deve ser 3000");
     }
 
     @Test
     public void valorTotalRecebidoPorEmprestimo_RetornaValorInexistente() {
         Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorEmprestimo(emprestimo);
         assertNotNull(totalRecebido, "O valor total recebido por empréstimo não deve ser nulo");
-        assertNotEquals(Utils.VALOR_INEXISTENTE, totalRecebido, "O valor total recebido por empréstimo não deve ser -9999");
+        assertNotEquals(TestUtils.VALOR_INEXISTENTE, totalRecebido, "O valor total recebido por empréstimo não deve ser -9999");
     }
 
     @Test
@@ -73,21 +73,21 @@ public class PagamentoRepositoryTest {
 
     @Test
     public void valorTotalRecebidoPorMes_RetornaValorCorreto() {
-        Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorMes(Utils.ANO, Utils.MES);
+        Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorMes(TestUtils.ANO, TestUtils.MES);
         assertNotNull(totalRecebido, "O valor total recebido por mês não deve ser nulo");
-        assertEquals(Utils.VALOR3000, totalRecebido, "O valor total recebido por mês deve ser 3000");
+        assertEquals(TestUtils.VALOR3000, totalRecebido, "O valor total recebido por mês deve ser 3000");
     }
 
     @Test
     public void valorTotalRecebidoPorMes_RetornaValorInexistente() {
-        Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorMes(Utils.ANO, Utils.MES);
+        Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorMes(TestUtils.ANO, TestUtils.MES);
         assertNotNull(totalRecebido, "O valor total recebido por mês não deve ser nulo");
-        assertNotEquals(Utils.VALOR_INEXISTENTE, totalRecebido, "O valor total recebido por mês não deve ser -9999");
+        assertNotEquals(TestUtils.VALOR_INEXISTENTE, totalRecebido, "O valor total recebido por mês não deve ser -9999");
     }
 
     @Test
     public void valorTotalRecebidoPorMes_RetornaNulo() {
-        Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorMes(Utils.ANO, Utils.MES - 1);
+        Double totalRecebido = pagamentoRepository.valorTotalRecebidoPorMes(TestUtils.ANO, TestUtils.MES - 1);
         assertNull(totalRecebido, "O valor total recebido deve ser nulo para meses sem pagamentos");
     }
 }

@@ -47,7 +47,7 @@ public class EmprestimoMapper {
         emprestimo.setValorEmprestimo(dto.getValorEmprestimo());
         emprestimo.setPorcentagem(dto.getPorcentagem());
         emprestimo.setQuitado(dto.getQuitado());
-        emprestimo.setBeneficiario(null);
+        emprestimo.setBeneficiario(emprestimo.getBeneficiario());
 
         return emprestimo;
     }

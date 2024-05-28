@@ -1,6 +1,6 @@
 package br.com.gerenciadoremprestimos.service;
 
-import br.com.gerenciadoremprestimos.Utils;
+import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioResponseDTO;
 import br.com.gerenciadoremprestimos.mapper.BeneficiarioMapper;
@@ -50,13 +50,13 @@ class BeneficiarioServiceTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario  = Utils.criarBeneficiario();        
+        beneficiario  = TestUtils.criarBeneficiario();        
         beneficiario2 = criarBeneficiario("EDSON MARQUES", "081955554222", "OBS TESTE");
         beneficiario3 = criarBeneficiario("CAUA MARQUES", "081955554333", "OBS TESTE");
         beneficiario4 = criarBeneficiario("LAURA ANDRADE", "081955554444", "OBS TESTE");
 
-        requestDTO    = Utils.criaBeneficiarioRequestDTO();
-        responseDTO   = Utils.criaBeneficiarioResponseDTO();
+        requestDTO    = TestUtils.criaBeneficiarioRequestDTO();
+        responseDTO   = TestUtils.criaBeneficiarioResponseDTO();
     }
 
     @Test
@@ -78,7 +78,7 @@ class BeneficiarioServiceTest {
         when(beneficiarioRepository.findById(anyLong())).thenReturn(Optional.of(beneficiario));
         when(beneficiarioMapper.paraDto(any())).thenReturn(responseDTO);
 
-        BeneficiarioResponseDTO result = beneficiarioService.atualizar(Utils.ID_BENEF, requestDTO);
+        BeneficiarioResponseDTO result = beneficiarioService.atualizar(TestUtils.ID_BENEF, requestDTO);
 
         assertNotNull(result);
         assertEquals(responseDTO, result);
@@ -88,13 +88,13 @@ class BeneficiarioServiceTest {
 
     @Test
     void atualizar_DeveLancarExcecao_BadRequest() {
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.atualizar(Utils.ID_INVALIDO, new BeneficiarioRequestDTO()));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.atualizar(TestUtils.ID_INVALIDO, new BeneficiarioRequestDTO()));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode()); 
     }
 
     @Test
     void atualizar_DeveLancarExcecao_NotFound() {
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.atualizar(Utils.ID_BENEF, new BeneficiarioRequestDTO()));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.atualizar(TestUtils.ID_BENEF, new BeneficiarioRequestDTO()));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode()); 
     }
 
@@ -102,7 +102,7 @@ class BeneficiarioServiceTest {
     void remover_DeveRemoverBeneficiario() {
         when(beneficiarioRepository.findById(anyLong())).thenReturn(Optional.of(beneficiario));
 
-        assertDoesNotThrow(() -> beneficiarioService.remover(Utils.ID_BENEF));
+        assertDoesNotThrow(() -> beneficiarioService.remover(TestUtils.ID_BENEF));
 
         verify(beneficiarioRepository, times(1)).delete(any());
     }
@@ -112,7 +112,7 @@ class BeneficiarioServiceTest {
         when(beneficiarioRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("Mensagem de erro");
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.remover(Utils.ID_BENEF));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.remover(TestUtils.ID_BENEF));
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode()); 
 
         verify(beneficiarioRepository, never()).delete(any());
@@ -120,7 +120,7 @@ class BeneficiarioServiceTest {
 
     @Test
     void remover_BeneficiarioNaoEncontrado_DeveLancarExcecao_BadRequest() {
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.remover(Utils.ID_INVALIDO));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> beneficiarioService.remover(TestUtils.ID_INVALIDO));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode()); 
 
         verify(beneficiarioRepository, never()).delete(any());
@@ -146,7 +146,7 @@ class BeneficiarioServiceTest {
         when(beneficiarioRepository.findById(anyLong())).thenReturn(Optional.of(beneficiario));
         when(beneficiarioMapper.paraDto(any())).thenReturn(responseDTO);
 
-        BeneficiarioResponseDTO result = beneficiarioService.buscarPorId(Utils.ID_BENEF);
+        BeneficiarioResponseDTO result = beneficiarioService.buscarPorId(TestUtils.ID_BENEF);
 
         assertNotNull(result);
         assertEquals(responseDTO, result);
@@ -159,7 +159,7 @@ class BeneficiarioServiceTest {
         when(beneficiarioRepository.findById(anyLong())).thenReturn(Optional.empty());
         when(messageSource.getMessage(anyString(), any(), any())).thenReturn("Mensagem de erro");
 
-        assertThrows(ResponseStatusException.class, () -> beneficiarioService.buscarPorId(Utils.ID_BENEF));
+        assertThrows(ResponseStatusException.class, () -> beneficiarioService.buscarPorId(TestUtils.ID_BENEF));
 
         verify(beneficiarioRepository, times(1)).findById(anyLong());
     }

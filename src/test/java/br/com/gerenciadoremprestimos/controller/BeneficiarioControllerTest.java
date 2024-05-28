@@ -1,6 +1,6 @@
 package br.com.gerenciadoremprestimos.controller;
 
-import br.com.gerenciadoremprestimos.Utils;
+import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
@@ -42,11 +42,11 @@ public class BeneficiarioControllerTest {
     
     @BeforeEach
     void setUp() {
-        beneficiario = Utils.criarBeneficiario();
+        beneficiario = TestUtils.criarBeneficiario();
       
         beneficiarioRepository.save(beneficiario);
 
-        requestDTO = Utils.criaBeneficiarioRequestDTO();
+        requestDTO = TestUtils.criaBeneficiarioRequestDTO();
     }
 
     @Transactional
@@ -57,9 +57,9 @@ public class BeneficiarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.nome").value(Utils.NOME_BENEF))
-                .andExpect(jsonPath("$.numeroTelefone").value(Utils.FONE_BENEF))
-                .andExpect(jsonPath("$.observacao").value(Utils.OBS_BENEF));
+                .andExpect(jsonPath("$.nome").value(TestUtils.NOME_BENEF))
+                .andExpect(jsonPath("$.numeroTelefone").value(TestUtils.FONE_BENEF))
+                .andExpect(jsonPath("$.observacao").value(TestUtils.OBS_BENEF));
     }
 
     @Transactional
@@ -80,16 +80,16 @@ public class BeneficiarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nome").value(Utils.NOME_BENEF))
-                .andExpect(jsonPath("$.numeroTelefone").value(Utils.FONE_BENEF))
-                .andExpect(jsonPath("$.observacao").value(Utils.OBS_BENEF));
+                .andExpect(jsonPath("$.nome").value(TestUtils.NOME_BENEF))
+                .andExpect(jsonPath("$.numeroTelefone").value(TestUtils.FONE_BENEF))
+                .andExpect(jsonPath("$.observacao").value(TestUtils.OBS_BENEF));
     }
 
     @Transactional
     @Test
     void atualizar_DeveLancarExcecao_BadRequest() throws Exception {
 
-        mockMvc.perform(put(BASE_URL.concat("/{id}"), Utils.ID_INVALIDO)
+        mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INVALIDO)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest());
@@ -99,7 +99,7 @@ public class BeneficiarioControllerTest {
     @Test
     void atualizar_DeveLancarExcecao_NotFound() throws Exception {
 
-        mockMvc.perform(put(BASE_URL.concat("/{id}"), Utils.ID_INEXISTENTE)
+        mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INEXISTENTE)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isNotFound());
@@ -111,9 +111,9 @@ public class BeneficiarioControllerTest {
 
         mockMvc.perform(get(BASE_URL.concat("/{id}"), beneficiario.getId()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nome").value(Utils.NOME_BENEF))
-                .andExpect(jsonPath("$.numeroTelefone").value(Utils.FONE_BENEF))
-                .andExpect(jsonPath("$.observacao").value(Utils.OBS_BENEF));
+                .andExpect(jsonPath("$.nome").value(TestUtils.NOME_BENEF))
+                .andExpect(jsonPath("$.numeroTelefone").value(TestUtils.FONE_BENEF))
+                .andExpect(jsonPath("$.observacao").value(TestUtils.OBS_BENEF));
     }
 
     @Transactional
@@ -140,7 +140,7 @@ public class BeneficiarioControllerTest {
         mockMvc.perform(get(BASE_URL.concat("/buscarPorNome/{nome}"), nomeBusca))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].nome").value(Utils.NOME_BENEF))
+                .andExpect(jsonPath("$[0].nome").value(TestUtils.NOME_BENEF))
                 .andExpect(jsonPath("$[1].nome").value(nomeBenef));
     }
 

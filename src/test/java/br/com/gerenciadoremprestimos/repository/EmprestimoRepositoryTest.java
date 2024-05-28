@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.time.LocalDateTime;
 
-import br.com.gerenciadoremprestimos.Utils;
+import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,14 +26,11 @@ public class EmprestimoRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        Beneficiario beneficiario = Utils.criarBeneficiario();
+        Beneficiario beneficiario = TestUtils.criarBeneficiario();
         beneficiarioRepository.save(beneficiario);
 
-        LocalDateTime dataEmprestimo1 = LocalDateTime.of(Utils.ANO, Utils.MES, 15, 0, 0);
-        LocalDateTime dataEmprestimo2 = LocalDateTime.of(Utils.ANO, Utils.MES, 20, 0, 0);
-
-        Emprestimo emprestimo1 = Utils.criarEmprestimo(beneficiario, Utils.VALOR1000, Utils.PORCENTAGEM30, dataEmprestimo1, dataEmprestimo1.plusMonths(1L), false);
-        Emprestimo emprestimo2 = Utils.criarEmprestimo(beneficiario, Utils.VALOR2000, Utils.PORCENTAGEM20, dataEmprestimo2, dataEmprestimo2.plusMonths(1L), false);
+        Emprestimo emprestimo1 = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR1000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
+        Emprestimo emprestimo2 = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR2000, TestUtils.PORCENTAGEM20, TestUtils.DATA_EMPRESTIMO2, TestUtils.DATA_EMPRESTIMO2.plusMonths(1L), false);
 
         emprestimoRepository.save(emprestimo1);
         emprestimoRepository.save(emprestimo2);
@@ -41,63 +38,63 @@ public class EmprestimoRepositoryTest {
 
     @Test
     public void valorTotalEmprestadoPorMes_RetornaValorCorreto() {
-        Double totalEmprestado = emprestimoRepository.valorTotalEmprestadoPorMes(Utils.ANO, Utils.MES);
+        Double totalEmprestado = emprestimoRepository.valorTotalEmprestadoPorMes(TestUtils.ANO, TestUtils.MES);
         assertNotNull(totalEmprestado, "O valor total emprestado não deve ser nulo");
-        assertEquals(Utils.VALOR3000, totalEmprestado, "O valor total emprestado deve ser 3000");
+        assertEquals(TestUtils.VALOR3000, totalEmprestado, "O valor total emprestado deve ser 3000");
     }
 
     @Test
     public void valorTotalEmprestadoPorMes_RetornaValorInexistente() {
-        Double totalEmprestado = emprestimoRepository.valorTotalEmprestadoPorMes(Utils.ANO, Utils.MES);
+        Double totalEmprestado = emprestimoRepository.valorTotalEmprestadoPorMes(TestUtils.ANO, TestUtils.MES);
         assertNotNull(totalEmprestado, "O valor total emprestado não deve ser nulo");
-        assertNotEquals(Utils.VALOR_INEXISTENTE, totalEmprestado, "O valor total emprestado não deve ser -9999");
+        assertNotEquals(TestUtils.VALOR_INEXISTENTE, totalEmprestado, "O valor total emprestado não deve ser -9999");
     }
 
     @Test
     public void valorTotalEmprestadoPorMes_RetornaNulo() {
-        Double totalEmprestado = emprestimoRepository.valorTotalEmprestadoPorMes(Utils.ANO, Utils.MES - 1);
+        Double totalEmprestado = emprestimoRepository.valorTotalEmprestadoPorMes(TestUtils.ANO, TestUtils.MES - 1);
         assertNull(totalEmprestado, "O valor total emprestado deve ser nulo para meses sem empréstimos");
     }
 
     @Test
     public void valorTotalLiquidoAReceberPorMes_RetornaValorCorreto() {
-        Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(Utils.ANO, Utils.MES + 1);
+        Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(TestUtils.ANO, TestUtils.MES + 1);
         assertNotNull(totalLiquido, "O valor total líquido a receber não deve ser nulo");
-        Double expectedTotalLiquido = Utils.VALOR1000 + (Utils.PORCENTAGEM30 / 100 * Utils.VALOR1000) + Utils.VALOR2000 + (Utils.PORCENTAGEM20 / 100 * Utils.VALOR2000);
+        Double expectedTotalLiquido = TestUtils.VALOR1000 + (TestUtils.PORCENTAGEM30 / 100 * TestUtils.VALOR1000) + TestUtils.VALOR2000 + (TestUtils.PORCENTAGEM20 / 100 * TestUtils.VALOR2000);
         assertEquals(expectedTotalLiquido, totalLiquido, "O valor total líquido a receber deve ser o esperado");
     }
 
     @Test
     public void valorTotalLiquidoAReceberPorMes_RetornaValorInexistente() {
-        Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(Utils.ANO, Utils.MES + 1);
+        Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(TestUtils.ANO, TestUtils.MES + 1);
         assertNotNull(totalLiquido, "O valor total líquido a receber não deve ser nulo");
-        assertNotEquals(Utils.VALOR_INEXISTENTE, totalLiquido, "O valor total líquido a receber não deve ser -9999");
+        assertNotEquals(TestUtils.VALOR_INEXISTENTE, totalLiquido, "O valor total líquido a receber não deve ser -9999");
     }
 
     @Test
     public void valorTotalLiquidoAReceberPorMes_RetornaNulo() {
-        Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(Utils.ANO, Utils.MES - 1);
+        Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(TestUtils.ANO, TestUtils.MES - 1);
         assertNull(totalLiquido, "O valor total líquido a receber deve ser nulo para meses sem empréstimos");
     }
 
     @Test
     public void valorTotalBrutoAReceberPorMes_RetornaValorCorreto() {
-        Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(Utils.ANO, Utils.MES + 1);
+        Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(TestUtils.ANO, TestUtils.MES + 1);
         assertNotNull(totalBruto, "O valor total bruto a receber não deve ser nulo");
-        Double expectedTotalBruto = (Utils.PORCENTAGEM30 / 100 * Utils.VALOR1000) + (Utils.PORCENTAGEM20 / 100 * Utils.VALOR2000);
+        Double expectedTotalBruto = (TestUtils.PORCENTAGEM30 / 100 * TestUtils.VALOR1000) + (TestUtils.PORCENTAGEM20 / 100 * TestUtils.VALOR2000);
         assertEquals(expectedTotalBruto, totalBruto, "O valor total bruto a receber deve ser o esperado");
     }
 
     @Test
     public void valorTotalBrutoAReceberPorMes_RetornaValorInexistente() {
-        Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(Utils.ANO, Utils.MES + 1);
+        Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(TestUtils.ANO, TestUtils.MES + 1);
         assertNotNull(totalBruto, "O valor total bruto a receber não deve ser nulo");
-        assertNotEquals(Utils.VALOR_INEXISTENTE, totalBruto, "O valor total bruto a receber não deve ser -9999");
+        assertNotEquals(TestUtils.VALOR_INEXISTENTE, totalBruto, "O valor total bruto a receber não deve ser -9999");
     }
 
     @Test
     public void valorTotalBrutoAReceberPorMes_RetornaNulo() {
-        Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(Utils.ANO, Utils.MES - 1);
+        Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(TestUtils.ANO, TestUtils.MES - 1);
         assertNull(totalBruto, "O valor total bruto a receber deve ser nulo para meses sem empréstimos");
     }
 }
