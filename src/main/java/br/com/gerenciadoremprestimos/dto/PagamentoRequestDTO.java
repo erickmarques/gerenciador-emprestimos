@@ -1,6 +1,8 @@
 package br.com.gerenciadoremprestimos.dto;
 
+import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
@@ -23,8 +25,9 @@ public class PagamentoRequestDTO {
     private Double valorPago;
 
     @NotNull(message = "{pagamento.tipoPagamento.naoNulo}")
+    @Pattern(regexp = "TOTAL|JUROS|ACORDO", message = "{pagamento.tipoPagamento.invalido}")
     private String tipoPagamento;
 
     @NotNull(message = "{pagamento.emprestimo.naoNulo}")
-    private Long emprestimo;
+    private Long emprestimoId;
 }

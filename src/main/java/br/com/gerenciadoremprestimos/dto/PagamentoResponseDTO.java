@@ -1,11 +1,11 @@
 package br.com.gerenciadoremprestimos.dto;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+
+import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 
 /**
  * Representa um DTO de retorno da entidade Pagamento.
@@ -13,11 +13,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PagamentoRequestDTO {
+public class PagamentoResponseDTO {
     private Long id;
-    private String dataPagamento;
+    private LocalDateTime dataPagamento;
     private Double valorPago;
-    private String tipoPagamento;
+    private TipoPagamento tipoPagamento;
     private EmprestimoResponseDTO emprestimo;
     private LocalDateTime dataCriacao;
     private LocalDateTime dataAtualizacao;

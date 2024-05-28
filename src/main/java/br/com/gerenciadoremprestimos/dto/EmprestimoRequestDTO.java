@@ -34,5 +34,5 @@ public class EmprestimoRequestDTO {
     private Boolean quitado;
 
     @NotNull(message = "{emprestimo.beneficiario.naoNulo}")
-    private Long beneficiario;
+    private Long beneficiarioId;
 }
