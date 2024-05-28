@@ -86,7 +86,7 @@ public class EmprestimoControllerTest {
     @Test
     void inserir_BeneficiarioNaoExiste_NotFound() throws Exception {
 
-        requestDTO.setBeneficiario(TestUtils.ID_INEXISTENTE);
+        requestDTO.setBeneficiarioId(TestUtils.ID_INEXISTENTE);
 
         mockMvc.perform(post(BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)

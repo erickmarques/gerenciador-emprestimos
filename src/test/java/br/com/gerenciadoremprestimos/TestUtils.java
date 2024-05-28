@@ -101,7 +101,7 @@ public class TestUtils {
         dto.setValorEmprestimo(VALOR1000);
         dto.setPorcentagem(PORCENTAGEM20);
         dto.setQuitado(quitado);
-        dto.setBeneficiario(beneficiario.getId());
+        dto.setBeneficiarioId(beneficiario.getId());
         return dto;
     }
 
