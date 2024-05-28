@@ -74,7 +74,7 @@ class EmprestimoServiceTest {
     }
 
     @Test
-    void inserir_DeveLancarExcecaoQuandoDataInvalida() {
+    void inserir_DeveLancarExcecaoQuandoDataInvalida_BadRequest() {
         requestDTO.setDataEmprestimo("9999-99-99");
 
         String mensagemErro = "Data inválida";
@@ -109,7 +109,7 @@ class EmprestimoServiceTest {
     }
 
     @Test
-    void atualizar_DeveLancarExcecaoQuandoIdInvalido() {
+    void atualizar_DeveLancarExcecaoQuandoIdInvalido_BadRequest() {
         String id = "";
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
@@ -122,7 +122,7 @@ class EmprestimoServiceTest {
     }
 
     @Test
-    void atualizar_DeveLancarExcecaoQuandoEmprestimoNaoEncontrado() {
+    void atualizar_DeveLancarExcecaoQuandoEmprestimoNaoEncontrado_NotFound() {
         String mensagemErro = "Empréstimo não encontrado";
         when(emprestimoRepository.findById(TestUtils.ID_INEXISTENTE)).thenReturn(Optional.empty());
         when(messageSource.getMessage(eq("emprestimo.naoExiste"), any(Object[].class), any(Locale.class))).thenReturn(mensagemErro);
@@ -139,7 +139,7 @@ class EmprestimoServiceTest {
 
 
     @Test
-    void atualizar_DeveLancarExcecaoQuandoErroAoSalvar() {
+    void atualizar_DeveLancarExcecaoQuandoErroAoSalvar_InternalServerError() {
         String id = "1";
         String mensagemErro = "Erro ao salvar empréstimo";
         when(emprestimoRepository.findById(Long.valueOf(id))).thenReturn(Optional.of(emprestimo));
@@ -154,5 +154,42 @@ class EmprestimoServiceTest {
         assertEquals(mensagemErro, exception.getReason());
         verify(emprestimoRepository, times(1)).findById(Long.valueOf(id));
         verify(emprestimoRepository, times(1)).save(emprestimo);
+    }
+
+    @Test
+    void remover_DeveRemoverEmprestimoComSucesso() {
+        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_BENEF))).thenReturn(Optional.of(emprestimo));
+
+        emprestimoService.remover(TestUtils.ID_BENEF);
+
+        verify(emprestimoRepository, times(1)).delete(emprestimo);
+    }
+
+    @Test
+    void remover_DeveLancarExcecaoQuandoIdInvalido_BadRequest() {
+        String id = "";
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.remover(id);
+        });
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verify(emprestimoRepository, never()).findById(any());
+        verify(emprestimoRepository, never()).delete(any());
+    }
+
+    @Test
+    void remover_DeveLancarExcecaoQuandoEmprestimoNaoEncontrado_NotFound() {
+        String mensagemErro = "Empréstimo não encontrado";
+
+        when(emprestimoRepository.findById(TestUtils.ID_INEXISTENTE)).thenReturn(Optional.empty());
+        when(messageSource.getMessage("emprestimo.naoExiste", new Object[]{String.valueOf(TestUtils.ID_INEXISTENTE)}, Locale.getDefault())).thenReturn(mensagemErro);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.remover(String.valueOf(TestUtils.ID_INEXISTENTE));
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals(mensagemErro, exception.getReason());
+        verify(emprestimoRepository, never()).delete(any());
     }
 }
