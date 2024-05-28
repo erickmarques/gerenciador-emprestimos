@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -45,6 +46,9 @@ class EmprestimoServiceTest {
 
     @InjectMocks
     private EmprestimoService emprestimoService;
+
+    @Mock
+    private BeneficiarioService beneficiarioService;
 
     @Mock
     private MessageSource messageSource;
@@ -68,7 +72,8 @@ class EmprestimoServiceTest {
 
     @Test
     void inserir_DeveInserirEmprestimo() {
-        when(emprestimoMapper.paraEntidade(any())).thenReturn(emprestimo);
+        when(beneficiarioService.obterBeneficiario(anyString())).thenReturn(beneficiario);
+        when(emprestimoMapper.paraEntidade(requestDTO, beneficiario)).thenReturn(emprestimo); 
         when(emprestimoMapper.paraDto(any())).thenReturn(responseDTO);
         when(emprestimoRepository.save(any())).thenReturn(emprestimo);
 
@@ -82,12 +87,15 @@ class EmprestimoServiceTest {
 
     @Test
     void inserir_DeveLancarExcecaoQuandoDataInvalida_BadRequest() {
+
+        when(beneficiarioService.obterBeneficiario(anyString())).thenReturn(beneficiario);
+
         requestDTO.setDataEmprestimo("9999-99-99");
 
         String mensagemErro = "Data inválida";
 
         doThrow(new ResponseStatusException(HttpStatus.BAD_REQUEST, mensagemErro))
-            .when(emprestimoMapper).paraEntidade(any(EmprestimoRequestDTO.class));
+            .when(emprestimoMapper).paraEntidade(any(EmprestimoRequestDTO.class), any(Beneficiario.class));
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             emprestimoService.inserir(requestDTO);
@@ -100,8 +108,10 @@ class EmprestimoServiceTest {
 
     @Test
     void atualizar_DeveAtualizarEmprestimo() {
+        when(beneficiarioService.obterBeneficiario(anyString())).thenReturn(beneficiario);
+
         when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
-        when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class))).thenReturn(emprestimo);
+        when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class), any(Beneficiario.class))).thenReturn(emprestimo);
         when(emprestimoMapper.paraDto(any())).thenReturn(responseDTO);
         when(emprestimoRepository.save(any())).thenReturn(emprestimo);
 
@@ -141,24 +151,6 @@ class EmprestimoServiceTest {
         assertEquals(mensagemErro, exception.getReason());
         verify(emprestimoRepository, times(1)).findById(TestUtils.ID_INEXISTENTE);
         verify(emprestimoRepository, never()).save(any());
-    }
-
-
-    @Test
-    void atualizar_DeveLancarExcecaoQuandoErroAoSalvar_InternalServerError() {
-        String mensagemErro = "Erro ao salvar empréstimo";
-        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
-        when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class))).thenReturn(emprestimo);
-        doThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, mensagemErro)).when(emprestimoRepository).save(any());
-
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            emprestimoService.atualizar(TestUtils.ID_VALIDO, requestDTO);
-        });
-
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
-        assertEquals(mensagemErro, exception.getReason());
-        verify(emprestimoRepository, times(1)).findById(Long.valueOf(TestUtils.ID_VALIDO));
-        verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 
     @Test

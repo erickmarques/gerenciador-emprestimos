@@ -3,6 +3,7 @@ package br.com.gerenciadoremprestimos.service;
 import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
 import br.com.gerenciadoremprestimos.mapper.EmprestimoMapper;
+import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.repository.EmprestimoRepository;
 import br.com.gerenciadoremprestimos.util.Utils;
@@ -26,10 +27,14 @@ public class EmprestimoService {
     private final EmprestimoRepository emprestimoRepository;
     private final MessageSource messageSource;
     private final EmprestimoMapper emprestimoMapper;
+    private final BeneficiarioService beneficiarioService;
 
     @Transactional
     public EmprestimoResponseDTO inserir(EmprestimoRequestDTO requestDTO) {
-        Emprestimo emprestimo = emprestimoMapper.paraEntidade(requestDTO);
+
+        Beneficiario beneficiario = beneficiarioService.obterBeneficiario(String.valueOf(requestDTO.getBeneficiario()));
+
+        Emprestimo emprestimo = emprestimoMapper.paraEntidade(requestDTO, beneficiario);
 
         emprestimoRepository.save(emprestimo);
         
@@ -40,9 +45,10 @@ public class EmprestimoService {
     public EmprestimoResponseDTO atualizar(String id, EmprestimoRequestDTO requestDTO) {
 
         validarId(id);
-        
-        Emprestimo emprestimo = obterEmprestimo(id);
-        emprestimo = emprestimoMapper.paraEntidadeAtualizar(emprestimo, requestDTO);
+
+        Beneficiario beneficiario = beneficiarioService.obterBeneficiario(String.valueOf(requestDTO.getBeneficiario()));
+        Emprestimo emprestimo     = obterEmprestimo(id);
+        emprestimo                = emprestimoMapper.paraEntidadeAtualizar(emprestimo, requestDTO, beneficiario);
 
         emprestimoRepository.save(emprestimo);
         

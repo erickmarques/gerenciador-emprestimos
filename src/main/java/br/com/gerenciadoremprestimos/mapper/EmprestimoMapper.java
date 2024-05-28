@@ -2,6 +2,7 @@ package br.com.gerenciadoremprestimos.mapper;
 
 import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
+import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.util.Utils;
 import lombok.RequiredArgsConstructor;
@@ -17,26 +18,27 @@ import java.util.Locale;
 public class EmprestimoMapper {
 
     private final MessageSource messageSource;
+    private final BeneficiarioMapper beneficiarioMapper;
 
-    public Emprestimo paraEntidade(EmprestimoRequestDTO dto) {
+    public Emprestimo paraEntidade(EmprestimoRequestDTO dto, Beneficiario beneficiario) {
         if (dto == null) {
             return null;
         }
         
         Emprestimo emprestimo = new Emprestimo();
         
-        return atualizarCampos(emprestimo, dto);
+        return atualizarCampos(emprestimo, dto, beneficiario);
     }
 
-    public Emprestimo paraEntidadeAtualizar(Emprestimo emprestimo, EmprestimoRequestDTO dto) {
+    public Emprestimo paraEntidadeAtualizar(Emprestimo emprestimo, EmprestimoRequestDTO dto, Beneficiario beneficiario) {
         if (dto == null) {
             return null;
         }
 
-        return atualizarCampos(emprestimo, dto);
+        return atualizarCampos(emprestimo, dto, beneficiario);
     }
 
-    private Emprestimo atualizarCampos(Emprestimo emprestimo, EmprestimoRequestDTO dto){
+    private Emprestimo atualizarCampos(Emprestimo emprestimo, EmprestimoRequestDTO dto, Beneficiario beneficiario){
         try {
             emprestimo.setDataEmprestimo(Utils.convertStringToLocalDateTime(dto.getDataEmprestimo()));
             emprestimo.setDataPagamento(Utils.convertStringToLocalDateTime(dto.getDataPagamento()));
@@ -47,7 +49,7 @@ public class EmprestimoMapper {
         emprestimo.setValorEmprestimo(dto.getValorEmprestimo());
         emprestimo.setPorcentagem(dto.getPorcentagem());
         emprestimo.setQuitado(dto.getQuitado());
-        emprestimo.setBeneficiario(emprestimo.getBeneficiario());
+        emprestimo.setBeneficiario(beneficiario);
 
         return emprestimo;
     }
@@ -64,7 +66,7 @@ public class EmprestimoMapper {
         dto.setValorEmprestimo(emprestimo.getValorEmprestimo());
         dto.setPorcentagem(emprestimo.getPorcentagem());
         dto.setQuitado(emprestimo.getQuitado());
-        dto.setBeneficiario(null);
+        dto.setBeneficiario(beneficiarioMapper.paraDto(emprestimo.getBeneficiario()));
         dto.setDataCriacao(emprestimo.getDataCriacao());
         dto.setDataAtualizacao(emprestimo.getDataAtualizacao());
         dto.setObservacao(emprestimo.getObservacao());

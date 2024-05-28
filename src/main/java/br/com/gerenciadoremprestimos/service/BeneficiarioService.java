@@ -86,7 +86,7 @@ public class BeneficiarioService {
         }
     }
 
-    private Beneficiario obterBeneficiario(String id){
+    public Beneficiario obterBeneficiario(String id){
         return beneficiarioRepository.findById(Long.valueOf(id))
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, obterMensagem("beneficiario.naoExiste", id)));
     }
