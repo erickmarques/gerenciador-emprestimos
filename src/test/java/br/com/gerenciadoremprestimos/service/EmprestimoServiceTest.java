@@ -18,12 +18,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -50,6 +53,8 @@ class EmprestimoServiceTest {
     private Emprestimo emprestimo;
     private EmprestimoRequestDTO requestDTO;
     private EmprestimoResponseDTO responseDTO;
+    
+    private List<Emprestimo> emprestimos;
 
     @BeforeEach
     void setUp() {
@@ -57,6 +62,8 @@ class EmprestimoServiceTest {
         emprestimo      = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR1000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
         requestDTO      = TestUtils.criarEmprestimoRequestDTO(false, beneficiario);
         responseDTO     = TestUtils.criarEmprestimoResponseDTO(1L, false, beneficiarioMapper.paraDto(beneficiario));
+
+        emprestimos = List.of(emprestimo);
     }
 
     @Test
@@ -192,4 +199,42 @@ class EmprestimoServiceTest {
         assertEquals(mensagemErro, exception.getReason());
         verify(emprestimoRepository, never()).delete(any());
     }
+
+    @Test
+    public void buscarTodos_ComRepositorioVazio() {
+        when(emprestimoRepository.findAll()).thenReturn(Collections.emptyList());
+
+        List<EmprestimoResponseDTO> result = emprestimoService.buscarTodos();
+
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
+        verify(emprestimoRepository, times(1)).findAll();
+        verify(emprestimoMapper, never()).paraDto(any());
+    }
+
+    @Test
+    public void buscarTodos_ComVariosEmprestimos() {
+        when(emprestimoRepository.findAll()).thenReturn(emprestimos);
+
+        List<EmprestimoResponseDTO> result = emprestimoService.buscarTodos();
+
+        assertNotNull(result);
+        assertEquals(emprestimos.size(), result.size());
+        verify(emprestimoRepository, times(1)).findAll();
+        verify(emprestimoMapper, times(emprestimos.size())).paraDto(any());
+    }
+
+    @Test
+    public void buscarTodos_ComRepositorioRetornandoNulo() {
+        when(emprestimoRepository.findAll()).thenReturn(null);
+
+        assertThrows(NullPointerException.class, () -> {
+            emprestimoService.buscarTodos();
+        });
+
+        verify(emprestimoRepository, times(1)).findAll();
+        verify(emprestimoMapper, never()).paraDto(any());
+    }
+
+
 }
