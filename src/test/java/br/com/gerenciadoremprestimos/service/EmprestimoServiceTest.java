@@ -100,18 +100,17 @@ class EmprestimoServiceTest {
 
     @Test
     void atualizar_DeveAtualizarEmprestimo() {
-        String id = "1";
-        when(emprestimoRepository.findById(Long.valueOf(id))).thenReturn(Optional.of(emprestimo));
+        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
         when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class))).thenReturn(emprestimo);
         when(emprestimoMapper.paraDto(any())).thenReturn(responseDTO);
         when(emprestimoRepository.save(any())).thenReturn(emprestimo);
 
-        EmprestimoResponseDTO result = emprestimoService.atualizar(id, requestDTO);
+        EmprestimoResponseDTO result = emprestimoService.atualizar(TestUtils.ID_VALIDO, requestDTO);
 
         assertNotNull(result);
         assertEquals(responseDTO, result);
 
-        verify(emprestimoRepository, times(1)).findById(Long.valueOf(id));
+        verify(emprestimoRepository, times(1)).findById(Long.valueOf(TestUtils.ID_VALIDO));
         verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 
@@ -147,27 +146,26 @@ class EmprestimoServiceTest {
 
     @Test
     void atualizar_DeveLancarExcecaoQuandoErroAoSalvar_InternalServerError() {
-        String id = "1";
         String mensagemErro = "Erro ao salvar empréstimo";
-        when(emprestimoRepository.findById(Long.valueOf(id))).thenReturn(Optional.of(emprestimo));
+        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
         when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class))).thenReturn(emprestimo);
         doThrow(new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, mensagemErro)).when(emprestimoRepository).save(any());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            emprestimoService.atualizar(id, requestDTO);
+            emprestimoService.atualizar(TestUtils.ID_VALIDO, requestDTO);
         });
 
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, exception.getStatusCode());
         assertEquals(mensagemErro, exception.getReason());
-        verify(emprestimoRepository, times(1)).findById(Long.valueOf(id));
+        verify(emprestimoRepository, times(1)).findById(Long.valueOf(TestUtils.ID_VALIDO));
         verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 
     @Test
     void remover_DeveRemoverEmprestimoComSucesso() {
-        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_BENEF))).thenReturn(Optional.of(emprestimo));
+        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
 
-        emprestimoService.remover(TestUtils.ID_BENEF);
+        emprestimoService.remover(TestUtils.ID_VALIDO);
 
         verify(emprestimoRepository, times(1)).delete(emprestimo);
     }
@@ -236,5 +234,42 @@ class EmprestimoServiceTest {
         verify(emprestimoMapper, never()).paraDto(any());
     }
 
+    @Test
+    void buscarPorId_ComIdValido() {
+        when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
+        when(emprestimoMapper.paraDto(emprestimo)).thenReturn(responseDTO);
+
+        EmprestimoResponseDTO result = emprestimoService.buscarPorId(TestUtils.ID_VALIDO);
+
+        assertNotNull(result);
+        assertEquals(responseDTO, result);
+        verify(emprestimoRepository, times(1)).findById(Long.valueOf(TestUtils.ID_VALIDO));
+        verify(emprestimoMapper, times(1)).paraDto(emprestimo);
+    }
+
+    @Test
+    void buscarPorId_DeveLancarExcecaoQuandoIdInvalido_BadRequest() {
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.buscarPorId(TestUtils.ID_INVALIDO);
+        });
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verify(emprestimoRepository, never()).findById(any());
+        verify(emprestimoMapper, never()).paraDto(any());
+    }
+
+    @Test
+    void buscarPorId_ComIdNulo() {
+        String id = null;
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            emprestimoService.buscarPorId(id);
+        });
+
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        verify(emprestimoRepository, never()).findById(any());
+        verify(emprestimoMapper, never()).paraDto(any());
+    }
 
 }

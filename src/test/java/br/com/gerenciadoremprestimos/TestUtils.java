@@ -8,7 +8,6 @@ import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.model.Pagamento;
 import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
-import br.com.gerenciadoremprestimos.util.Utils;
 
 import java.time.LocalDateTime;
 
@@ -25,11 +24,11 @@ public class TestUtils {
     public static final LocalDateTime DATA_EMPRESTIMO1  = LocalDateTime.of(ANO, MES, 15, 0, 0);
     public static final LocalDateTime DATA_EMPRESTIMO2  = LocalDateTime.of(ANO, TestUtils.MES, 20, 0, 0);
     
-    public static final String ID_BENEF                 = "1";
     public static final String NOME_BENEF               = "Erick Marques";
     public static final String FONE_BENEF               = "081988888888";
     public static final String OBS_BENEF                = "Observação de teste";
 
+    public static final String ID_VALIDO                = "1";
     public static final String ID_INVALIDO              = "abc";
     public static final Long ID_INEXISTENTE             = 99999L;
  
@@ -57,7 +56,7 @@ public class TestUtils {
         
         BeneficiarioResponseDTO responseDTO = new BeneficiarioResponseDTO();
 
-        responseDTO.setId(Long.valueOf(ID_BENEF));
+        responseDTO.setId(Long.valueOf(ID_VALIDO));
         responseDTO.setNome(TestUtils.NOME_BENEF);
         responseDTO.setNumeroTelefone(TestUtils.FONE_BENEF);
         responseDTO.setObservacao(TestUtils.OBS_BENEF);
