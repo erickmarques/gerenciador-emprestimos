@@ -13,29 +13,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
-import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
-import br.com.gerenciadoremprestimos.service.EmprestimoService;
+import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
+import br.com.gerenciadoremprestimos.dto.PagamentoResponseDTO;
+import br.com.gerenciadoremprestimos.service.PagamentoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/emprestimo")
+@RequestMapping("/api/pagamento")
 @RequiredArgsConstructor
-public class EmprestimoController {
+public class PagamentoController {
     
-    private final EmprestimoService emprestimoService;
+    private final PagamentoService pagamentoService;
 
     @PostMapping
-    public ResponseEntity<EmprestimoResponseDTO> inserir(@Valid @RequestBody EmprestimoRequestDTO requestDTO) {
+    public ResponseEntity<PagamentoResponseDTO> inserir(@Valid @RequestBody PagamentoRequestDTO requestDTO) {
 
-        EmprestimoResponseDTO responseDTO = emprestimoService.inserir(requestDTO);
+        PagamentoResponseDTO responseDTO = pagamentoService.inserir(requestDTO);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmprestimoResponseDTO> atualizar(@PathVariable String id, @Valid @RequestBody EmprestimoRequestDTO requestDTO) {
-        EmprestimoResponseDTO responseDTO = emprestimoService.atualizar(id, requestDTO);
+    public ResponseEntity<PagamentoResponseDTO> atualizar(@PathVariable String id, @Valid @RequestBody PagamentoRequestDTO requestDTO) {
+        PagamentoResponseDTO responseDTO = pagamentoService.atualizar(id, requestDTO);
         if (responseDTO != null) {
             return new ResponseEntity<>(responseDTO, HttpStatus.OK);
         } else {
@@ -45,23 +45,23 @@ public class EmprestimoController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> remover(@PathVariable String id) {
-        emprestimoService.remover(id);
+        pagamentoService.remover(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmprestimoResponseDTO> buscarPorId(@PathVariable String id) {
-        EmprestimoResponseDTO beneficiario = emprestimoService.buscarPorId(id);
-        if (beneficiario != null) {
-            return new ResponseEntity<>(beneficiario, HttpStatus.OK);
+    public ResponseEntity<PagamentoResponseDTO> buscarPorId(@PathVariable String id) {
+        PagamentoResponseDTO pagamento = pagamentoService.buscarPorId(id);
+        if (pagamento != null) {
+            return new ResponseEntity<>(pagamento, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<EmprestimoResponseDTO>> buscarTodos() {
-        List<EmprestimoResponseDTO> beneficiarios = emprestimoService.buscarTodos();
-        return new ResponseEntity<>(beneficiarios, HttpStatus.OK);
+    public ResponseEntity<List<PagamentoResponseDTO>> buscarTodos() {
+        List<PagamentoResponseDTO> pagamentos = pagamentoService.buscarTodos();
+        return new ResponseEntity<>(pagamentos, HttpStatus.OK);
     }
 }

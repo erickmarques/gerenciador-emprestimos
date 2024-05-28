@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.PagamentoResponseDTO;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
-import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.model.Pagamento;
 import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 import br.com.gerenciadoremprestimos.util.Utils;
