@@ -70,7 +70,7 @@ class BeneficiarioServiceTest {
         assertNotNull(result);
         assertEquals(responseDTO, result);
 
-        verify(beneficiarioRepository, times(1)).save(any());
+        verify(beneficiarioRepository, times(1)).save(beneficiario);
     }
 
     @Test

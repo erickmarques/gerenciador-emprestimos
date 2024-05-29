@@ -82,7 +82,7 @@ class EmprestimoServiceTest {
         assertNotNull(result);
         assertEquals(responseDTO, result);
 
-        verify(emprestimoRepository, times(1)).save(any());
+        verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 
     @Test

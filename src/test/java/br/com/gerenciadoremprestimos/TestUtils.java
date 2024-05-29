@@ -4,6 +4,8 @@ import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioResponseDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
+import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
+import br.com.gerenciadoremprestimos.dto.PagamentoResponseDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.model.Pagamento;
@@ -83,17 +85,6 @@ public class TestUtils {
         return emprestimo;
     }
 
-    
-    public static Pagamento criarPagamento(Emprestimo emprestimo, Double valorPago, LocalDateTime dataPagamento, TipoPagamento tipoPagamento) {
-        Pagamento pagamento = new Pagamento();
-        pagamento.setEmprestimo(emprestimo);
-        pagamento.setValorPago(valorPago);
-        pagamento.setDataPagamento(dataPagamento);
-        pagamento.setTipoPagamento(tipoPagamento);
-        
-        return pagamento;
-    }
-
     public static EmprestimoRequestDTO criarEmprestimoRequestDTO(Boolean quitado, Beneficiario beneficiario) {
         EmprestimoRequestDTO dto = new EmprestimoRequestDTO();
         dto.setDataEmprestimo("2024-05-01");
@@ -114,6 +105,38 @@ public class TestUtils {
         dto.setPorcentagem(PORCENTAGEM20);
         dto.setQuitado(quitado);
         dto.setBeneficiario(beneficiario);
+        return dto;
+    }
+
+    public static Pagamento criarPagamento(Emprestimo emprestimo, Double valorPago, LocalDateTime dataPagamento, TipoPagamento tipoPagamento) {
+        Pagamento pagamento = new Pagamento();
+        pagamento.setEmprestimo(emprestimo);
+        pagamento.setValorPago(valorPago);
+        pagamento.setDataPagamento(dataPagamento);
+        pagamento.setTipoPagamento(tipoPagamento);
+        
+        return pagamento;
+    }
+
+    public static PagamentoRequestDTO criarPagamentoRequestDTO(Emprestimo emprestimo) {
+        PagamentoRequestDTO dto = new PagamentoRequestDTO();
+
+        dto.setDataPagamento("2024-01-01");
+        dto.setValorPago(VALOR2000);
+        dto.setTipoPagamento(TipoPagamento.TOTAL.toString());
+        dto.setEmprestimoId(emprestimo.getId());
+
+        return dto;
+    }
+
+    public static PagamentoResponseDTO criarPagamentoResponsetDTO(EmprestimoResponseDTO responseDTO) {
+        PagamentoResponseDTO dto = new PagamentoResponseDTO();
+
+        dto.setDataPagamento(DATA_EMPRESTIMO2);
+        dto.setValorPago(VALOR2000);
+        dto.setTipoPagamento(TipoPagamento.TOTAL);
+        dto.setEmprestimo(responseDTO);
+
         return dto;
     }
 }
