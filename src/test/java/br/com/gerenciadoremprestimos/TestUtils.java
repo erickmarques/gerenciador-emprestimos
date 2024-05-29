@@ -23,8 +23,8 @@ public class TestUtils {
     public static final Double VALOR2000                = 2000.0;
     public static final Double VALOR3000                = 3000.0;
     public static final Double VALOR_INEXISTENTE        = -9999.0;
-    public static final LocalDateTime DATA_EMPRESTIMO1  = LocalDateTime.of(ANO, MES, 15, 0, 0);
-    public static final LocalDateTime DATA_EMPRESTIMO2  = LocalDateTime.of(ANO, TestUtils.MES, 20, 0, 0);
+    public static final LocalDateTime DATA_EMPRESTIMO1  = LocalDateTime.of(ANO, MES, 1, 0, 0);
+    public static final LocalDateTime DATA_EMPRESTIMO2  = LocalDateTime.of(ANO, MES, 20, 0, 0);
     
     public static final String NOME_BENEF               = "Erick Marques";
     public static final String FONE_BENEF               = "081988888888";
@@ -121,7 +121,7 @@ public class TestUtils {
     public static PagamentoRequestDTO criarPagamentoRequestDTO(Emprestimo emprestimo) {
         PagamentoRequestDTO dto = new PagamentoRequestDTO();
 
-        dto.setDataPagamento("2024-01-01");
+        dto.setDataPagamento("2024-05-01");
         dto.setValorPago(VALOR2000);
         dto.setTipoPagamento(TipoPagamento.TOTAL.toString());
         dto.setEmprestimoId(emprestimo.getId());

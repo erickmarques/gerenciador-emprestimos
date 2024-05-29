@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doThrow;
@@ -30,8 +29,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.gerenciadoremprestimos.TestUtils;
-import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
-import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
 import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.PagamentoResponseDTO;
 import br.com.gerenciadoremprestimos.mapper.EmprestimoMapper;
