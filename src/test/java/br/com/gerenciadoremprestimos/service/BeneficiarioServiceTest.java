@@ -51,9 +51,9 @@ class BeneficiarioServiceTest {
     @BeforeEach
     void setUp() {
         beneficiario  = TestUtils.criarBeneficiario();        
-        beneficiario2 = criarBeneficiario("EDSON MARQUES", "081955554222", "OBS TESTE");
-        beneficiario3 = criarBeneficiario("CAUA MARQUES", "081955554333", "OBS TESTE");
-        beneficiario4 = criarBeneficiario("LAURA ANDRADE", "081955554444", "OBS TESTE");
+        beneficiario2 = TestUtils.criarBeneficiario("EDSON MARQUES", "081955554222", "OBS TESTE");
+        beneficiario3 = TestUtils.criarBeneficiario("CAUA MARQUES", "081955554333", "OBS TESTE");
+        beneficiario4 = TestUtils.criarBeneficiario("LAURA ANDRADE", "081955554444", "OBS TESTE");
 
         requestDTO    = TestUtils.criaBeneficiarioRequestDTO();
         responseDTO   = TestUtils.criaBeneficiarioResponseDTO();
@@ -185,11 +185,4 @@ class BeneficiarioServiceTest {
         verify(beneficiarioMapper, times(4)).paraDto(any(Beneficiario.class));
     }
 
-    private Beneficiario criarBeneficiario(String nome, String telefone, String observacao){
-        Beneficiario beneficiario = new Beneficiario();
-        beneficiario.setNome(nome);
-        beneficiario.setNumeroTelefone(telefone);
-        beneficiario.setObservacao(observacao);
-        return beneficiario;
-    }
 }

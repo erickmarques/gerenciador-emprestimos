@@ -11,20 +11,18 @@ import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.model.Pagamento;
 import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
+import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
+import br.com.gerenciadoremprestimos.repository.EmprestimoRepository;
 
 import java.time.LocalDateTime;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class TestUtils {
 
@@ -70,6 +68,14 @@ public class TestUtils {
         beneficiario.setNumeroTelefone(FONE_BENEF);
         beneficiario.setObservacao(OBS_BENEF);
 
+        return beneficiario;
+    }
+
+    public static Beneficiario criarBeneficiario(String nome, String telefone, String observacao){
+        Beneficiario beneficiario = new Beneficiario();
+        beneficiario.setNome(nome);
+        beneficiario.setNumeroTelefone(telefone);
+        beneficiario.setObservacao(observacao);
         return beneficiario;
     }
 
@@ -168,5 +174,17 @@ public class TestUtils {
         dto.setEmprestimo(responseDTO);
 
         return dto;
+    }
+
+    public static void criarListaBeneficiario(BeneficiarioRepository repository){
+        repository.save(criarBeneficiario());
+        repository.save(criarBeneficiario("EDSON MARQUES", "081955554222", "OBS TESTE"));
+        repository.save(criarBeneficiario("CAUA MARQUES", "081955554333", "OBS TESTE"));
+        repository.save(criarBeneficiario("LAURA ANDRADE", "081955554444", "OBS TESTE"));
+    }
+
+    public static void criarListaEmprestimo(EmprestimoRepository repository, Beneficiario beneficiario){
+        repository.save(criarEmprestimo(beneficiario, VALOR1000, PORCENTAGEM30, DATA_EMPRESTIMO1, DATA_EMPRESTIMO1.plusMonths(1L), false));
+        repository.save(criarEmprestimo(beneficiario, VALOR2000, PORCENTAGEM20, DATA_EMPRESTIMO2, DATA_EMPRESTIMO2.plusMonths(1L), false));
     }
 }
