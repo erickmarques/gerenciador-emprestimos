@@ -2,6 +2,7 @@ package br.com.gerenciadoremprestimos.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,4 +29,8 @@ public class Beneficiario extends Base {
 
     @Column(name = "numero_telefone", nullable = false)
     private String numeroTelefone;
+
+    @Lob
+    @Column(name = "imagem", nullable = true)
+    private byte[] imagem;
 }

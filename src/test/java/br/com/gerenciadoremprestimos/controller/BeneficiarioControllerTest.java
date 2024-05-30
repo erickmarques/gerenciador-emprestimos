@@ -2,7 +2,6 @@ package br.com.gerenciadoremprestimos.controller;
 
 import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
-import br.com.gerenciadoremprestimos.dto.LoginRequestDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
 
@@ -17,7 +16,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -147,8 +145,8 @@ public class BeneficiarioControllerTest {
         String nomeBusca = "MARQUES";
         String nomeBenef = "EDSON MARQUES";
 
-        Beneficiario beneficiario2 = new Beneficiario(nomeBenef, "81977776666");
-        Beneficiario beneficiario3 = new Beneficiario("LAURA ANDRADE", "81955556666");
+        Beneficiario beneficiario2 = new Beneficiario(nomeBenef, "81977776666", null);
+        Beneficiario beneficiario3 = new Beneficiario("LAURA ANDRADE", "81955556666", null);
 
         beneficiarioRepository.save(beneficiario2);
         beneficiarioRepository.save(beneficiario3);

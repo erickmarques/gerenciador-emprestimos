@@ -1,6 +1,7 @@
 package br.com.gerenciadoremprestimos.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,13 +10,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioResponseDTO;
 import br.com.gerenciadoremprestimos.service.BeneficiarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -68,5 +74,12 @@ public class BeneficiarioController {
     public ResponseEntity<List<BeneficiarioResponseDTO>> buscarPorNome(@PathVariable String nome) {
         List<BeneficiarioResponseDTO> beneficiarios = beneficiarioService.buscarPorNome(nome);
         return new ResponseEntity<>(beneficiarios, HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/imagem")
+    public ResponseEntity<Void> salvarImagem(@PathVariable("id") String id, @RequestParam("file") MultipartFile file) {
+        beneficiarioService.salvarImagem(id, file);
+        
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
