@@ -1,7 +1,6 @@
 package br.com.gerenciadoremprestimos.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,6 @@ import br.com.gerenciadoremprestimos.dto.BeneficiarioResponseDTO;
 import br.com.gerenciadoremprestimos.service.BeneficiarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import static org.springframework.http.MediaType.IMAGE_PNG_VALUE;
 
 import java.io.IOException;
 import java.util.List;

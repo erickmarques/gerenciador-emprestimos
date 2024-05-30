@@ -5,12 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.time.LocalDateTime;
-
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
-import br.com.gerenciadoremprestimos.model.Pagamento;
-import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
 import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
 import br.com.gerenciadoremprestimos.utils.PagamentoUtil;
