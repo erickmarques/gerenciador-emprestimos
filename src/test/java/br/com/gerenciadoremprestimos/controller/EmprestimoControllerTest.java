@@ -19,6 +19,8 @@ import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
 import br.com.gerenciadoremprestimos.repository.EmprestimoRepository;
 import jakarta.transaction.Transactional;
 import static org.hamcrest.Matchers.hasSize;
+
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -50,6 +52,8 @@ public class EmprestimoControllerTest {
 
     private EmprestimoRequestDTO requestDTO;
 
+    private String token;
+
     @BeforeEach
     void setUp() {
         beneficiario = TestUtils.criarBeneficiario();
@@ -57,6 +61,7 @@ public class EmprestimoControllerTest {
         requestDTO   = TestUtils.criarEmprestimoRequestDTO(false, beneficiario);
         emprestimo   = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR2000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
         emprestimo   = emprestimoRepository.save(emprestimo);
+        token        = TestUtils.obterToken(mockMvc, objectMapper);
     }
 
     @Transactional
@@ -64,6 +69,7 @@ public class EmprestimoControllerTest {
     void inserir_DeveCriarEmprestimo() throws Exception {
 
         mockMvc.perform(post(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
@@ -77,6 +83,7 @@ public class EmprestimoControllerTest {
     void inserir_CamposVazios_BadRequest() throws Exception {
 
         mockMvc.perform(post(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new EmprestimoRequestDTO())))
                 .andExpect(status().isBadRequest());
@@ -89,6 +96,7 @@ public class EmprestimoControllerTest {
         requestDTO.setBeneficiarioId(TestUtils.ID_INEXISTENTE);
 
         mockMvc.perform(post(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isNotFound());
@@ -102,6 +110,7 @@ public class EmprestimoControllerTest {
         requestDTO.setPorcentagem(TestUtils.PORCENTAGEM20);
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), emprestimo.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
@@ -115,6 +124,7 @@ public class EmprestimoControllerTest {
     void atualizar_IdInvalidoDeveLancarExcecao_BadRequest() throws Exception {
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INVALIDO)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest());
@@ -125,6 +135,7 @@ public class EmprestimoControllerTest {
     void atualizar_IdInexistenteDeveLancarExcecao_NotFound() throws Exception {
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INEXISTENTE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isNotFound());
@@ -134,7 +145,8 @@ public class EmprestimoControllerTest {
     @Test
     void buscarPorId_DeveRetornarEmprestimo() throws Exception {
 
-        mockMvc.perform(get(BASE_URL.concat("/{id}"), emprestimo.getId()))
+        mockMvc.perform(get(BASE_URL.concat("/{id}"), emprestimo.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.beneficiario.id").value(beneficiario.getId()))
                 .andExpect(jsonPath("$.valorEmprestimo").value(emprestimo.getValorEmprestimo()))
@@ -144,7 +156,8 @@ public class EmprestimoControllerTest {
     @Transactional
     @Test
     void buscarTodos_DeveRetornarListaDeEmprestimos() throws Exception {
-        mockMvc.perform(get(BASE_URL))
+        mockMvc.perform(get(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
@@ -152,7 +165,8 @@ public class EmprestimoControllerTest {
     @Transactional
     @Test
     void remover_DeveRemoverEmprestimo() throws Exception {
-        mockMvc.perform(delete(BASE_URL.concat("/{id}"), emprestimo.getId()))
+        mockMvc.perform(delete(BASE_URL.concat("/{id}"), emprestimo.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isNoContent());
     }
     

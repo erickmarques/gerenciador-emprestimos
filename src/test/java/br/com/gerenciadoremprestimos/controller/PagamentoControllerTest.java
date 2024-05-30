@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -58,6 +59,8 @@ public class PagamentoControllerTest {
 
     private PagamentoRequestDTO requestDTO;
 
+    private String token;
+
     @BeforeEach
     void setUp() {
         beneficiario = TestUtils.criarBeneficiario();
@@ -70,6 +73,8 @@ public class PagamentoControllerTest {
         pagamento    = pagamentoRepository.save(pagamento);
 
         requestDTO   = TestUtils.criarPagamentoRequestDTO(emprestimo);
+
+        token        = TestUtils.obterToken(mockMvc, objectMapper);
     }
 
     @Transactional
@@ -77,6 +82,7 @@ public class PagamentoControllerTest {
     void inserir_DeveCriarPagamento() throws Exception {
 
         mockMvc.perform(post(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
@@ -90,6 +96,7 @@ public class PagamentoControllerTest {
     void inserir_CamposVazios_BadRequest() throws Exception {
 
         mockMvc.perform(post(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new PagamentoRequestDTO())))
                 .andExpect(status().isBadRequest());
@@ -102,6 +109,7 @@ public class PagamentoControllerTest {
         requestDTO.setEmprestimoId(TestUtils.ID_INEXISTENTE);
 
         mockMvc.perform(post(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isNotFound());
@@ -115,6 +123,7 @@ public class PagamentoControllerTest {
         requestDTO.setTipoPagamento(TipoPagamento.JUROS.toString());
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), pagamento.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
@@ -128,6 +137,7 @@ public class PagamentoControllerTest {
     void atualizar_IdInvalidoDeveLancarExcecao_BadRequest() throws Exception {
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INVALIDO)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isBadRequest());
@@ -138,6 +148,7 @@ public class PagamentoControllerTest {
     void atualizar_IdInexistenteDeveLancarExcecao_NotFound() throws Exception {
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INEXISTENTE)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)         
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isNotFound());
@@ -147,7 +158,8 @@ public class PagamentoControllerTest {
     @Test
     void buscarPorId_DeveRetornarPagamento() throws Exception {
 
-        mockMvc.perform(get(BASE_URL.concat("/{id}"), pagamento.getId()))
+        mockMvc.perform(get(BASE_URL.concat("/{id}"), pagamento.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.emprestimo.id").value(emprestimo.getId()))
                 .andExpect(jsonPath("$.valorPago").value(pagamento.getValorPago()))
@@ -157,7 +169,8 @@ public class PagamentoControllerTest {
     @Transactional
     @Test
     void buscarTodos_DeveRetornarListaDePagamentos() throws Exception {
-        mockMvc.perform(get(BASE_URL))
+        mockMvc.perform(get(BASE_URL)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
@@ -165,7 +178,8 @@ public class PagamentoControllerTest {
     @Transactional
     @Test
     void remover_DeveRemoverEmprestimo() throws Exception {
-        mockMvc.perform(delete(BASE_URL.concat("/{id}"), pagamento.getId()))
+        mockMvc.perform(delete(BASE_URL.concat("/{id}"), pagamento.getId())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isNoContent());
     }
     

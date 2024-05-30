@@ -4,6 +4,7 @@ import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioResponseDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
+import br.com.gerenciadoremprestimos.dto.LoginRequestDTO;
 import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.PagamentoResponseDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
@@ -12,6 +13,18 @@ import br.com.gerenciadoremprestimos.model.Pagamento;
 import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 
 import java.time.LocalDateTime;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 public class TestUtils {
 
@@ -33,6 +46,23 @@ public class TestUtils {
     public static final String ID_VALIDO                = "1";
     public static final String ID_INVALIDO              = "abc";
     public static final Long ID_INEXISTENTE             = 99999L;
+
+
+    public static String obterToken(MockMvc mockMvc, ObjectMapper objectMapper) {
+
+        try {
+            MvcResult result = mockMvc.perform(post("/login")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(new LoginRequestDTO("erick_marques", "123"))))
+                    .andReturn();
+            
+            String token = result.getResponse().getContentAsString();
+
+            return token;
+        } catch (Exception e) {
+            return null;
+        }
+    }
  
     public static Beneficiario criarBeneficiario(){
         Beneficiario beneficiario = new Beneficiario();
