@@ -7,7 +7,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,12 +27,9 @@ public class Pagamento extends Base {
 
     private static final long serialVersionUID = 1L;
 
-    @NotNull(message = "{pagamento.dataPagamento.naoNulo}")
     @Column(name = "data_pagamento", nullable = false)
     private LocalDateTime dataPagamento;
 
-    @NotNull(message = "{pagamento.valorPago.naoNulo}")
-    @Positive(message = "{pagamento.valorPago.Positive}")
     @Column(name = "valor_pago", nullable = false)
     private Double valorPago;
 
@@ -43,7 +39,6 @@ public class Pagamento extends Base {
 
     @ManyToOne
     @JoinColumn(name = "emprestimo_id", nullable = false)
-    @NotNull(message = "{pagamento.emprestimo.naoNulo}")
     private Emprestimo emprestimo;
 
     public enum TipoPagamento {
