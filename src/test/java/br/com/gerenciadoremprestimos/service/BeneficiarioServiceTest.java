@@ -1,11 +1,13 @@
 package br.com.gerenciadoremprestimos.service;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioResponseDTO;
 import br.com.gerenciadoremprestimos.mapper.BeneficiarioMapper;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,13 +52,13 @@ class BeneficiarioServiceTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario  = TestUtils.criarBeneficiario();        
-        beneficiario2 = TestUtils.criarBeneficiario("EDSON MARQUES", "081955554222", "OBS TESTE");
-        beneficiario3 = TestUtils.criarBeneficiario("CAUA MARQUES", "081955554333", "OBS TESTE");
-        beneficiario4 = TestUtils.criarBeneficiario("LAURA ANDRADE", "081955554444", "OBS TESTE");
+        beneficiario  = BeneficiarioUtil.criarBeneficiarioPadrao();        
+        beneficiario2 = BeneficiarioUtil.criarBeneficiario("EDSON MARQUES", "081955554222", "OBS TESTE");
+        beneficiario3 = BeneficiarioUtil.criarBeneficiario("CAUA MARQUES", "081955554333", "OBS TESTE");
+        beneficiario4 = BeneficiarioUtil.criarBeneficiario("LAURA ANDRADE", "081955554444", "OBS TESTE");
 
-        requestDTO    = TestUtils.criaBeneficiarioRequestDTO();
-        responseDTO   = TestUtils.criaBeneficiarioResponseDTO();
+        requestDTO    = BeneficiarioUtil.criaBeneficiarioRequestDTO();
+        responseDTO   = BeneficiarioUtil.criaBeneficiarioResponseDTO();
     }
 
     @Test

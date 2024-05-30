@@ -1,9 +1,10 @@
 package br.com.gerenciadoremprestimos.controller;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.BeneficiarioRequestDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class BeneficiarioControllerTest {
 
     @Autowired
@@ -47,11 +50,11 @@ public class BeneficiarioControllerTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario = TestUtils.criarBeneficiario();
+        beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
       
         beneficiarioRepository.save(beneficiario);
 
-        requestDTO = TestUtils.criaBeneficiarioRequestDTO();
+        requestDTO = BeneficiarioUtil.criaBeneficiarioRequestDTO();
 
         token = TestUtils.obterToken(mockMvc, objectMapper);
     }
@@ -65,9 +68,9 @@ public class BeneficiarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.nome").value(TestUtils.NOME_BENEF))
-                .andExpect(jsonPath("$.numeroTelefone").value(TestUtils.FONE_BENEF))
-                .andExpect(jsonPath("$.observacao").value(TestUtils.OBS_BENEF));
+                .andExpect(jsonPath("$.nome").value(BeneficiarioUtil.NOME_BENEF))
+                .andExpect(jsonPath("$.numeroTelefone").value(BeneficiarioUtil.FONE_BENEF))
+                .andExpect(jsonPath("$.observacao").value(BeneficiarioUtil.OBS_BENEF));
     }
 
     @Transactional
@@ -90,9 +93,9 @@ public class BeneficiarioControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nome").value(TestUtils.NOME_BENEF))
-                .andExpect(jsonPath("$.numeroTelefone").value(TestUtils.FONE_BENEF))
-                .andExpect(jsonPath("$.observacao").value(TestUtils.OBS_BENEF));
+                .andExpect(jsonPath("$.nome").value(BeneficiarioUtil.NOME_BENEF))
+                .andExpect(jsonPath("$.numeroTelefone").value(BeneficiarioUtil.FONE_BENEF))
+                .andExpect(jsonPath("$.observacao").value(BeneficiarioUtil.OBS_BENEF));
     }
 
     @Transactional
@@ -124,9 +127,9 @@ public class BeneficiarioControllerTest {
         mockMvc.perform(get(BASE_URL.concat("/{id}"), beneficiario.getId())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.nome").value(TestUtils.NOME_BENEF))
-                .andExpect(jsonPath("$.numeroTelefone").value(TestUtils.FONE_BENEF))
-                .andExpect(jsonPath("$.observacao").value(TestUtils.OBS_BENEF));
+                .andExpect(jsonPath("$.nome").value(BeneficiarioUtil.NOME_BENEF))
+                .andExpect(jsonPath("$.numeroTelefone").value(BeneficiarioUtil.FONE_BENEF))
+                .andExpect(jsonPath("$.observacao").value(BeneficiarioUtil.OBS_BENEF));
     }
 
     @Transactional
@@ -155,7 +158,7 @@ public class BeneficiarioControllerTest {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].nome").value(TestUtils.NOME_BENEF))
+                .andExpect(jsonPath("$[0].nome").value(BeneficiarioUtil.NOME_BENEF))
                 .andExpect(jsonPath("$[1].nome").value(nomeBenef));
     }
 

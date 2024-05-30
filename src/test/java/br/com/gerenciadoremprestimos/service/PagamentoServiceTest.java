@@ -28,7 +28,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.PagamentoResponseDTO;
 import br.com.gerenciadoremprestimos.mapper.EmprestimoMapper;
@@ -38,6 +37,10 @@ import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.model.Pagamento;
 import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 import br.com.gerenciadoremprestimos.repository.PagamentoRepository;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
+import br.com.gerenciadoremprestimos.utils.PagamentoUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class PagamentoServiceTest {
@@ -70,11 +73,11 @@ class PagamentoServiceTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario    = TestUtils.criarBeneficiario();
-        emprestimo      = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR1000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
-        pagamento       = TestUtils.criarPagamento(emprestimo, TestUtils.VALOR1000, TestUtils.DATA_EMPRESTIMO2, TipoPagamento.TOTAL);
-        requestDTO      = TestUtils.criarPagamentoRequestDTO(emprestimo);
-        responseDTO     = TestUtils.criarPagamentoResponsetDTO(emprestimoMapper.paraDto(emprestimo));
+        beneficiario    = BeneficiarioUtil.criarBeneficiarioPadrao();
+        emprestimo      = EmprestimoUtil.criarEmprestimo(beneficiario, TestUtils.VALOR1000, EmprestimoUtil.PORCENTAGEM30, EmprestimoUtil.DATA_EMPRESTIMO1, EmprestimoUtil.DATA_EMPRESTIMO1.plusMonths(1L), false);
+        pagamento       = PagamentoUtil.criarPagamento(emprestimo, TestUtils.VALOR1000, PagamentoUtil.DATA_PAGAMENTO1, TipoPagamento.TOTAL);
+        requestDTO      = PagamentoUtil.criarPagamentoRequestDTO(emprestimo);
+        responseDTO     = PagamentoUtil.criarPagamentoResponsetDTO(emprestimoMapper.paraDto(emprestimo));
 
         pagamentos = List.of(pagamento);
     }

@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,7 +35,7 @@ public class BeneficiarioRepositoryTest {
      */
     @BeforeEach
     public void setUp() {
-        TestUtils.criarListaBeneficiario(beneficiarioRepository);
+        BeneficiarioUtil.criarListaBeneficiario(beneficiarioRepository);
     }
 
     /**

@@ -13,7 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.PagamentoRequestDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
@@ -22,6 +21,10 @@ import br.com.gerenciadoremprestimos.model.Pagamento.TipoPagamento;
 import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
 import br.com.gerenciadoremprestimos.repository.EmprestimoRepository;
 import br.com.gerenciadoremprestimos.repository.PagamentoRepository;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
+import br.com.gerenciadoremprestimos.utils.PagamentoUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
 import jakarta.transaction.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -63,16 +66,16 @@ public class PagamentoControllerTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario = TestUtils.criarBeneficiario();
+        beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
         beneficiario = beneficiarioRepository.save(beneficiario);
         
-        emprestimo   = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR2000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
+        emprestimo   = EmprestimoUtil.criarEmprestimo(beneficiario, TestUtils.VALOR2000, EmprestimoUtil.PORCENTAGEM30, EmprestimoUtil.DATA_EMPRESTIMO1, EmprestimoUtil.DATA_EMPRESTIMO1.plusMonths(1L), false);
         emprestimo   = emprestimoRepository.save(emprestimo);
         
-        pagamento    = TestUtils.criarPagamento(emprestimo, TestUtils.VALOR1000, TestUtils.DATA_EMPRESTIMO2, TipoPagamento.TOTAL);
+        pagamento    = PagamentoUtil.criarPagamento(emprestimo, TestUtils.VALOR1000, PagamentoUtil.DATA_PAGAMENTO1, TipoPagamento.TOTAL);
         pagamento    = pagamentoRepository.save(pagamento);
 
-        requestDTO   = TestUtils.criarPagamentoRequestDTO(emprestimo);
+        requestDTO   = PagamentoUtil.criarPagamentoRequestDTO(emprestimo);
 
         token        = TestUtils.obterToken(mockMvc, objectMapper);
     }

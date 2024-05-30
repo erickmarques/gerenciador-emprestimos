@@ -11,12 +11,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
 import br.com.gerenciadoremprestimos.repository.EmprestimoRepository;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
 import jakarta.transaction.Transactional;
 import static org.hamcrest.Matchers.hasSize;
 
@@ -56,10 +58,10 @@ public class EmprestimoControllerTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario = TestUtils.criarBeneficiario();
+        beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
         beneficiario = beneficiarioRepository.save(beneficiario);
-        requestDTO   = TestUtils.criarEmprestimoRequestDTO(false, beneficiario);
-        emprestimo   = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR2000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
+        requestDTO   = EmprestimoUtil.criarEmprestimoRequestDTO(false, beneficiario);
+        emprestimo   = EmprestimoUtil.criarEmprestimo(beneficiario, TestUtils.VALOR2000, EmprestimoUtil.PORCENTAGEM30, EmprestimoUtil.DATA_EMPRESTIMO1, EmprestimoUtil.DATA_EMPRESTIMO1.plusMonths(1L), false);
         emprestimo   = emprestimoRepository.save(emprestimo);
         token        = TestUtils.obterToken(mockMvc, objectMapper);
     }
@@ -75,7 +77,7 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.beneficiario.id").value(beneficiario.getId()))
                 .andExpect(jsonPath("$.valorEmprestimo").value(TestUtils.VALOR1000))
-                .andExpect(jsonPath("$.porcentagem").value(TestUtils.PORCENTAGEM20));
+                .andExpect(jsonPath("$.porcentagem").value(EmprestimoUtil.PORCENTAGEM20));
     }
 
     @Transactional
@@ -107,7 +109,7 @@ public class EmprestimoControllerTest {
     void atualizar_DeveAtualizarEmprestimo() throws Exception {
 
         requestDTO.setValorEmprestimo(TestUtils.VALOR3000);
-        requestDTO.setPorcentagem(TestUtils.PORCENTAGEM20);
+        requestDTO.setPorcentagem(EmprestimoUtil.PORCENTAGEM20);
 
         mockMvc.perform(put(BASE_URL.concat("/{id}"), emprestimo.getId())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 

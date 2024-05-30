@@ -5,9 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,11 +35,11 @@ public class EmprestimoRepositoryTest {
      */
     @BeforeEach
     public void setUp() {
-        Beneficiario beneficiario = TestUtils.criarBeneficiario();
+        Beneficiario beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
         
         beneficiarioRepository.save(beneficiario);
 
-        TestUtils.criarListaEmprestimo(emprestimoRepository, beneficiario);
+        EmprestimoUtil.criarListaEmprestimo(emprestimoRepository, beneficiario);
     }
 
     /**
@@ -84,7 +86,7 @@ public class EmprestimoRepositoryTest {
     @DisplayName("Teste de soma de valor total líquido a receber no mês.")
     public void valorTotalLiquidoAReceberPorMes_RetornaValorCorreto() {
         Double totalLiquido = emprestimoRepository.valorTotalLiquidoAReceberPorMes(TestUtils.ANO, TestUtils.MES + 1);
-        Double expectedTotalLiquido = TestUtils.VALOR1000 + (TestUtils.PORCENTAGEM30 / 100 * TestUtils.VALOR1000) + TestUtils.VALOR2000 + (TestUtils.PORCENTAGEM20 / 100 * TestUtils.VALOR2000);
+        Double expectedTotalLiquido = TestUtils.VALOR1000 + (EmprestimoUtil.PORCENTAGEM30 / 100 * TestUtils.VALOR1000) + TestUtils.VALOR2000 + (EmprestimoUtil.PORCENTAGEM20 / 100 * TestUtils.VALOR2000);
         
         assertNotNull(totalLiquido, "O valor total líquido a receber não deve ser nulo");
         assertEquals(expectedTotalLiquido, totalLiquido, "O valor total líquido a receber deve ser o esperado");
@@ -122,7 +124,7 @@ public class EmprestimoRepositoryTest {
     public void valorTotalBrutoAReceberPorMes_RetornaValorCorreto() {
         Double totalBruto = emprestimoRepository.valorTotalBrutoAReceberPorMes(TestUtils.ANO, TestUtils.MES + 1);
         assertNotNull(totalBruto, "O valor total bruto a receber não deve ser nulo");
-        Double expectedTotalBruto = (TestUtils.PORCENTAGEM30 / 100 * TestUtils.VALOR1000) + (TestUtils.PORCENTAGEM20 / 100 * TestUtils.VALOR2000);
+        Double expectedTotalBruto = (EmprestimoUtil.PORCENTAGEM30 / 100 * TestUtils.VALOR1000) + (EmprestimoUtil.PORCENTAGEM20 / 100 * TestUtils.VALOR2000);
         assertEquals(expectedTotalBruto, totalBruto, "O valor total bruto a receber deve ser o esperado");
     }
 

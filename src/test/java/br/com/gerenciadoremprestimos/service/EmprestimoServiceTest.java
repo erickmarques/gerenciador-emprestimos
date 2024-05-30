@@ -1,6 +1,5 @@
 package br.com.gerenciadoremprestimos.service;
 
-import br.com.gerenciadoremprestimos.TestUtils;
 import br.com.gerenciadoremprestimos.dto.EmprestimoRequestDTO;
 import br.com.gerenciadoremprestimos.dto.EmprestimoResponseDTO;
 import br.com.gerenciadoremprestimos.mapper.BeneficiarioMapper;
@@ -8,6 +7,10 @@ import br.com.gerenciadoremprestimos.mapper.EmprestimoMapper;
 import br.com.gerenciadoremprestimos.model.Beneficiario;
 import br.com.gerenciadoremprestimos.model.Emprestimo;
 import br.com.gerenciadoremprestimos.repository.EmprestimoRepository;
+import br.com.gerenciadoremprestimos.utils.BeneficiarioUtil;
+import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
+import br.com.gerenciadoremprestimos.utils.TestUtils;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,10 +65,10 @@ class EmprestimoServiceTest {
 
     @BeforeEach
     void setUp() {
-        beneficiario    = TestUtils.criarBeneficiario();
-        emprestimo      = TestUtils.criarEmprestimo(beneficiario, TestUtils.VALOR1000, TestUtils.PORCENTAGEM30, TestUtils.DATA_EMPRESTIMO1, TestUtils.DATA_EMPRESTIMO1.plusMonths(1L), false);
-        requestDTO      = TestUtils.criarEmprestimoRequestDTO(false, beneficiario);
-        responseDTO     = TestUtils.criarEmprestimoResponseDTO(1L, false, beneficiarioMapper.paraDto(beneficiario));
+        beneficiario    = BeneficiarioUtil.criarBeneficiarioPadrao();
+        emprestimo      = EmprestimoUtil.criarEmprestimo(beneficiario, TestUtils.VALOR1000, EmprestimoUtil.PORCENTAGEM30, EmprestimoUtil.DATA_EMPRESTIMO1, EmprestimoUtil.DATA_EMPRESTIMO1.plusMonths(1L), false);
+        requestDTO      = EmprestimoUtil.criarEmprestimoRequestDTO(false, beneficiario);
+        responseDTO     = EmprestimoUtil.criarEmprestimoResponseDTO(1L, false, beneficiarioMapper.paraDto(beneficiario));
 
         emprestimos = List.of(emprestimo);
     }
