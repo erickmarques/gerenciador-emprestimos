@@ -27,9 +27,6 @@ public class BeneficiarioRepositoryTest {
     @Autowired
     private BeneficiarioRepository beneficiarioRepository;
 
-    private final String NOME_PESQUISA = "MARQUES";
-    private final String NOME_LAURA    = "LAURA";
-
     /**
      * Configura o ambiente de teste antes de cada teste.
      */
@@ -46,7 +43,7 @@ public class BeneficiarioRepositoryTest {
     @DisplayName("Teste de pesquisa parcialmente pelo nome do beneficiário com letra maiúscula, devendo retornar 3 beneficiários")
     public void findByNomeContainingIgnoreCase_ComLetraMaiuscula_DeveRetornarTresBeneficiario(){
 
-        List<Beneficiario> beneficiarios = beneficiarioRepository.findByNomeContainingIgnoreCase(NOME_PESQUISA);
+        List<Beneficiario> beneficiarios = beneficiarioRepository.findByNomeContainingIgnoreCase(BeneficiarioUtil.NOME_PESQUISA);
 
         validarBeneficiarios(beneficiarios, 3);
     }
@@ -59,7 +56,7 @@ public class BeneficiarioRepositoryTest {
     @DisplayName("Teste de pesquisa parcialmente pelo nome do beneficiário com letra minúscula, devendo retornar 3 beneficiários")
     public void findByNomeContainingIgnoreCase_ComLetraMinuscula_DeveRetornarTresBeneficiario(){
 
-        List<Beneficiario> beneficiarios = beneficiarioRepository.findByNomeContainingIgnoreCase(NOME_PESQUISA.toLowerCase());
+        List<Beneficiario> beneficiarios = beneficiarioRepository.findByNomeContainingIgnoreCase(BeneficiarioUtil.NOME_PESQUISA.toLowerCase());
 
         validarBeneficiarios(beneficiarios, 3);
     }
@@ -72,7 +69,7 @@ public class BeneficiarioRepositoryTest {
     @DisplayName("Teste de pesquisa parcialmente pelo nome do beneficiário, devendo retornar 1 beneficiário")
     public void findByNomeContainingIgnoreCase_DeveRetornarUmBeneficiario(){
 
-        List<Beneficiario> beneficiarios = beneficiarioRepository.findByNomeContainingIgnoreCase(NOME_LAURA);
+        List<Beneficiario> beneficiarios = beneficiarioRepository.findByNomeContainingIgnoreCase(BeneficiarioUtil.NOME_LAURA);
 
         validarBeneficiarios(beneficiarios, 1);
     }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class EmprestimoControllerTest {
 
     @Autowired
@@ -66,7 +68,6 @@ public class EmprestimoControllerTest {
         token        = TestUtils.obterToken(mockMvc, objectMapper);
     }
 
-    @Transactional
     @Test
     void inserir_DeveCriarEmprestimo() throws Exception {
 
@@ -80,7 +81,6 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$.porcentagem").value(EmprestimoUtil.PORCENTAGEM20));
     }
 
-    @Transactional
     @Test
     void inserir_CamposVazios_BadRequest() throws Exception {
 
@@ -91,7 +91,6 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
     @Test
     void inserir_BeneficiarioNaoExiste_NotFound() throws Exception {
 
@@ -104,7 +103,6 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
     @Test
     void atualizar_DeveAtualizarEmprestimo() throws Exception {
 
@@ -121,7 +119,6 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$.porcentagem").value(emprestimo.getPorcentagem()));
     }
 
-    @Transactional
     @Test
     void atualizar_IdInvalidoDeveLancarExcecao_BadRequest() throws Exception {
 
@@ -132,7 +129,6 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
     @Test
     void atualizar_IdInexistenteDeveLancarExcecao_NotFound() throws Exception {
 
@@ -143,7 +139,6 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
     @Test
     void buscarPorId_DeveRetornarEmprestimo() throws Exception {
 
@@ -155,7 +150,6 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$.porcentagem").value(emprestimo.getPorcentagem()));
     }
 
-    @Transactional
     @Test
     void buscarTodos_DeveRetornarListaDeEmprestimos() throws Exception {
         mockMvc.perform(get(BASE_URL)
@@ -164,7 +158,6 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
 
-    @Transactional
     @Test
     void remover_DeveRemoverEmprestimo() throws Exception {
         mockMvc.perform(delete(BASE_URL.concat("/{id}"), emprestimo.getId())

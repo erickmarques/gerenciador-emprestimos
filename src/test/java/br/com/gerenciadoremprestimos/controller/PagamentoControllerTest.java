@@ -80,7 +80,6 @@ public class PagamentoControllerTest {
         token        = TestUtils.obterToken(mockMvc, objectMapper);
     }
 
-    @Transactional
     @Test
     void inserir_DeveCriarPagamento() throws Exception {
 
@@ -94,7 +93,6 @@ public class PagamentoControllerTest {
                 .andExpect(jsonPath("$.valorPago").value(TestUtils.VALOR2000));
     }
 
-    @Transactional
     @Test
     void inserir_CamposVazios_BadRequest() throws Exception {
 
@@ -105,7 +103,6 @@ public class PagamentoControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
     @Test
     void inserir_EmprestimoNaoExiste_NotFound() throws Exception {
 
@@ -118,7 +115,6 @@ public class PagamentoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
     @Test
     void atualizar_DeveAtualizarPagamento() throws Exception {
 
@@ -135,7 +131,6 @@ public class PagamentoControllerTest {
                 .andExpect(jsonPath("$.tipoPagamento").value(requestDTO.getTipoPagamento().toString()));
     }
 
-    @Transactional
     @Test
     void atualizar_IdInvalidoDeveLancarExcecao_BadRequest() throws Exception {
 
@@ -146,7 +141,6 @@ public class PagamentoControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-    @Transactional
     @Test
     void atualizar_IdInexistenteDeveLancarExcecao_NotFound() throws Exception {
 
@@ -157,7 +151,6 @@ public class PagamentoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    @Transactional
     @Test
     void buscarPorId_DeveRetornarPagamento() throws Exception {
 
@@ -169,7 +162,6 @@ public class PagamentoControllerTest {
                 .andExpect(jsonPath("$.tipoPagamento").value(pagamento.getTipoPagamento().toString()));
     }
 
-    @Transactional
     @Test
     void buscarTodos_DeveRetornarListaDePagamentos() throws Exception {
         mockMvc.perform(get(BASE_URL)
@@ -178,7 +170,6 @@ public class PagamentoControllerTest {
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
 
-    @Transactional
     @Test
     void remover_DeveRemoverEmprestimo() throws Exception {
         mockMvc.perform(delete(BASE_URL.concat("/{id}"), pagamento.getId())

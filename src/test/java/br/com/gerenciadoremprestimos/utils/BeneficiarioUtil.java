@@ -7,6 +7,8 @@ import br.com.gerenciadoremprestimos.repository.BeneficiarioRepository;
 
 public class BeneficiarioUtil {
 
+    public static final String NOME_PESQUISA            = "MARQUES";
+    public static final String NOME_LAURA               = "LAURA";
     public static final String NOME_BENEF               = "Erick Marques";
     public static final String FONE_BENEF               = "081988888888";
     public static final String OBS_BENEF                = "Observação de teste";
