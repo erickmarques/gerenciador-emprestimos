@@ -12,6 +12,7 @@ import br.com.gerenciadoremprestimos.utils.EmprestimoUtil;
 import br.com.gerenciadoremprestimos.utils.TestUtils;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -35,6 +36,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
+/**
+ * Classe de testes para EmprestimoService.
+ */
 @ExtendWith(MockitoExtension.class)
 class EmprestimoServiceTest {
 
@@ -63,17 +67,24 @@ class EmprestimoServiceTest {
     
     private List<Emprestimo> emprestimos;
 
+    /**
+     * Configuração inicial para os testes.
+     */
     @BeforeEach
     void setUp() {
-        beneficiario    = BeneficiarioUtil.criarBeneficiarioPadrao();
-        emprestimo      = EmprestimoUtil.criarEmprestimo(beneficiario, TestUtils.VALOR1000, EmprestimoUtil.PORCENTAGEM30, EmprestimoUtil.DATA_EMPRESTIMO1, EmprestimoUtil.DATA_EMPRESTIMO1.plusMonths(1L), false);
-        requestDTO      = EmprestimoUtil.criarEmprestimoRequestDTO(false, beneficiario);
-        responseDTO     = EmprestimoUtil.criarEmprestimoResponseDTO(1L, false, beneficiarioMapper.paraDto(beneficiario));
+        beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
+        emprestimo = EmprestimoUtil.criarEmprestimo(beneficiario, TestUtils.VALOR1000, EmprestimoUtil.PORCENTAGEM30, EmprestimoUtil.DATA_EMPRESTIMO1, EmprestimoUtil.DATA_EMPRESTIMO1.plusMonths(1L), false);
+        requestDTO = EmprestimoUtil.criarEmprestimoRequestDTO(false, beneficiario);
+        responseDTO = EmprestimoUtil.criarEmprestimoResponseDTO(1L, false, beneficiarioMapper.paraDto(beneficiario));
 
         emprestimos = List.of(emprestimo);
     }
 
+    /**
+     * Testa a inserção de um empréstimo.
+     */
     @Test
+    @DisplayName("Deve inserir um empréstimo com sucesso")
     void inserir_DeveInserirEmprestimo() {
         when(beneficiarioService.obterBeneficiario(anyString())).thenReturn(beneficiario);
         when(emprestimoMapper.paraEntidade(requestDTO, beneficiario)).thenReturn(emprestimo); 
@@ -82,15 +93,18 @@ class EmprestimoServiceTest {
 
         EmprestimoResponseDTO result = emprestimoService.inserir(requestDTO);
 
-        assertNotNull(result);
-        assertEquals(responseDTO, result);
+        assertNotNull(result, "O resultado não deve ser nulo");
+        assertEquals(responseDTO, result, "O resultado deve ser igual ao esperado");
 
         verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 
+    /**
+     * Testa a inserção de um empréstimo com data inválida.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando a data do empréstimo for inválida")
     void inserir_DeveLancarExcecaoQuandoDataInvalida_BadRequest() {
-
         when(beneficiarioService.obterBeneficiario(anyString())).thenReturn(beneficiario);
 
         requestDTO.setDataEmprestimo("9999-99-99");
@@ -104,15 +118,18 @@ class EmprestimoServiceTest {
             emprestimoService.inserir(requestDTO);
         });
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
-        assertEquals(mensagemErro, exception.getReason());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode(), "A exceção deve ter o status BAD_REQUEST");
+        assertEquals(mensagemErro, exception.getReason(), "A razão da exceção deve ser a mensagem de erro");
         verify(emprestimoRepository, never()).save(any());
     }
 
+    /**
+     * Testa a atualização de um empréstimo.
+     */
     @Test
+    @DisplayName("Deve atualizar um empréstimo com sucesso")
     void atualizar_DeveAtualizarEmprestimo() {
         when(beneficiarioService.obterBeneficiario(anyString())).thenReturn(beneficiario);
-
         when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
         when(emprestimoMapper.paraEntidadeAtualizar(any(Emprestimo.class), any(EmprestimoRequestDTO.class), any(Beneficiario.class))).thenReturn(emprestimo);
         when(emprestimoMapper.paraDto(any())).thenReturn(responseDTO);
@@ -120,14 +137,18 @@ class EmprestimoServiceTest {
 
         EmprestimoResponseDTO result = emprestimoService.atualizar(TestUtils.ID_VALIDO, requestDTO);
 
-        assertNotNull(result);
-        assertEquals(responseDTO, result);
+        assertNotNull(result, "O resultado não deve ser nulo");
+        assertEquals(responseDTO, result, "O resultado deve ser igual ao esperado");
 
         verify(emprestimoRepository, times(1)).findById(Long.valueOf(TestUtils.ID_VALIDO));
         verify(emprestimoRepository, times(1)).save(emprestimo);
     }
 
+    /**
+     * Testa a atualização de um empréstimo com ID inválido.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando o ID do empréstimo for inválido")
     void atualizar_DeveLancarExcecaoQuandoIdInvalido_BadRequest() {
         String id = "";
 
@@ -135,12 +156,16 @@ class EmprestimoServiceTest {
             emprestimoService.atualizar(id, requestDTO);
         });
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode(), "A exceção deve ter o status BAD_REQUEST");
         verify(emprestimoRepository, never()).findById(any());
         verify(emprestimoRepository, never()).save(any());
     }
 
+    /**
+     * Testa a atualização de um empréstimo quando o empréstimo não for encontrado.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando o empréstimo não for encontrado")
     void atualizar_DeveLancarExcecaoQuandoEmprestimoNaoEncontrado_NotFound() {
         String mensagemErro = "Empréstimo não encontrado";
         when(emprestimoRepository.findById(TestUtils.ID_INEXISTENTE)).thenReturn(Optional.empty());
@@ -150,13 +175,17 @@ class EmprestimoServiceTest {
             emprestimoService.atualizar(String.valueOf(TestUtils.ID_INEXISTENTE), requestDTO);
         });
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals(mensagemErro, exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "A exceção deve ter o status NOT_FOUND");
+        assertEquals(mensagemErro, exception.getReason(), "A razão da exceção deve ser a mensagem de erro");
         verify(emprestimoRepository, times(1)).findById(TestUtils.ID_INEXISTENTE);
         verify(emprestimoRepository, never()).save(any());
     }
 
+    /**
+     * Testa a remoção de um empréstimo com sucesso.
+     */
     @Test
+    @DisplayName("Deve remover um empréstimo com sucesso")
     void remover_DeveRemoverEmprestimoComSucesso() {
         when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
 
@@ -165,19 +194,27 @@ class EmprestimoServiceTest {
         verify(emprestimoRepository, times(1)).delete(emprestimo);
     }
 
+    /**
+     * Testa a remoção de um empréstimo com ID inválido.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando o ID do empréstimo for inválido")
     void remover_DeveLancarExcecaoQuandoIdInvalido_BadRequest() {
         String id = "";
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             emprestimoService.remover(id);
         });
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode(), "A exceção deve ter o status BAD_REQUEST");
         verify(emprestimoRepository, never()).findById(any());
         verify(emprestimoRepository, never()).delete(any());
     }
 
+    /**
+     * Testa a remoção de um empréstimo quando o empréstimo não for encontrado.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando o empréstimo não for encontrado")
     void remover_DeveLancarExcecaoQuandoEmprestimoNaoEncontrado_NotFound() {
         String mensagemErro = "Empréstimo não encontrado";
 
@@ -188,37 +225,49 @@ class EmprestimoServiceTest {
             emprestimoService.remover(String.valueOf(TestUtils.ID_INEXISTENTE));
         });
 
-        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
-        assertEquals(mensagemErro, exception.getReason());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode(), "A exceção deve ter o status NOT_FOUND");
+        assertEquals(mensagemErro, exception.getReason(), "A razão da exceção deve ser a mensagem de erro");
         verify(emprestimoRepository, never()).delete(any());
     }
 
+    /**
+     * Testa a busca de todos os empréstimos quando o repositório estiver vazio.
+     */
     @Test
-    public void buscarTodos_ComRepositorioVazio() {
+    @DisplayName("Deve retornar uma lista vazia quando não houver empréstimos")
+    void buscarTodos_ComRepositorioVazio() {
         when(emprestimoRepository.findAll()).thenReturn(Collections.emptyList());
 
         List<EmprestimoResponseDTO> result = emprestimoService.buscarTodos();
 
-        assertNotNull(result);
-        assertTrue(result.isEmpty());
+        assertNotNull(result, "O resultado não deve ser nulo");
+        assertTrue(result.isEmpty(), "A lista de resultados deve estar vazia");
         verify(emprestimoRepository, times(1)).findAll();
         verify(emprestimoMapper, never()).paraDto(any());
     }
 
+    /**
+     * Testa a busca de todos os empréstimos quando houver vários empréstimos.
+     */
     @Test
-    public void buscarTodos_ComVariosEmprestimos() {
+    @DisplayName("Deve retornar uma lista com todos os empréstimos")
+    void buscarTodos_ComVariosEmprestimos() {
         when(emprestimoRepository.findAll()).thenReturn(emprestimos);
 
         List<EmprestimoResponseDTO> result = emprestimoService.buscarTodos();
 
-        assertNotNull(result);
-        assertEquals(emprestimos.size(), result.size());
+        assertNotNull(result, "O resultado não deve ser nulo");
+        assertEquals(emprestimos.size(), result.size(), "O tamanho da lista de resultados deve ser igual ao número de empréstimos");
         verify(emprestimoRepository, times(1)).findAll();
         verify(emprestimoMapper, times(emprestimos.size())).paraDto(any());
     }
 
+    /**
+     * Testa a busca de todos os empréstimos quando o repositório retornar nulo.
+     */
     @Test
-    public void buscarTodos_ComRepositorioRetornandoNulo() {
+    @DisplayName("Deve lançar exceção quando o repositório retornar nulo")
+    void buscarTodos_ComRepositorioRetornandoNulo() {
         when(emprestimoRepository.findAll()).thenReturn(null);
 
         assertThrows(NullPointerException.class, () -> {
@@ -229,32 +278,43 @@ class EmprestimoServiceTest {
         verify(emprestimoMapper, never()).paraDto(any());
     }
 
+    /**
+     * Testa a busca de um empréstimo por ID válido.
+     */
     @Test
+    @DisplayName("Deve buscar um empréstimo por ID com sucesso")
     void buscarPorId_ComIdValido() {
         when(emprestimoRepository.findById(Long.valueOf(TestUtils.ID_VALIDO))).thenReturn(Optional.of(emprestimo));
         when(emprestimoMapper.paraDto(emprestimo)).thenReturn(responseDTO);
 
         EmprestimoResponseDTO result = emprestimoService.buscarPorId(TestUtils.ID_VALIDO);
 
-        assertNotNull(result);
-        assertEquals(responseDTO, result);
+        assertNotNull(result, "O resultado não deve ser nulo");
+        assertEquals(responseDTO, result, "O resultado deve ser igual ao esperado");
         verify(emprestimoRepository, times(1)).findById(Long.valueOf(TestUtils.ID_VALIDO));
         verify(emprestimoMapper, times(1)).paraDto(emprestimo);
     }
 
+    /**
+     * Testa a busca de um empréstimo por ID inválido.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando o ID do empréstimo for inválido")
     void buscarPorId_DeveLancarExcecaoQuandoIdInvalido_BadRequest() {
-
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
             emprestimoService.buscarPorId(TestUtils.ID_INVALIDO);
         });
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode(), "A exceção deve ter o status BAD_REQUEST");
         verify(emprestimoRepository, never()).findById(any());
         verify(emprestimoMapper, never()).paraDto(any());
     }
 
+    /**
+     * Testa a busca de um empréstimo por ID nulo.
+     */
     @Test
+    @DisplayName("Deve lançar exceção quando o ID do empréstimo for nulo")
     void buscarPorId_ComIdNulo() {
         String id = null;
 
@@ -262,9 +322,8 @@ class EmprestimoServiceTest {
             emprestimoService.buscarPorId(id);
         });
 
-        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getStatusCode(), "A exceção deve ter o status BAD_REQUEST");
         verify(emprestimoRepository, never()).findById(any());
         verify(emprestimoMapper, never()).paraDto(any());
     }
-
 }
