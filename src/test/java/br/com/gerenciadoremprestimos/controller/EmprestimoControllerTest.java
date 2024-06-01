@@ -1,6 +1,7 @@
 package br.com.gerenciadoremprestimos.controller;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Classe de teste para o EmprestimoController.
+ */
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -52,12 +56,15 @@ public class EmprestimoControllerTest {
     
     private Emprestimo emprestimo;
     
-    private String BASE_URL = "/api/emprestimo";
+    private final String BASE_URL = "/api/emprestimo";
 
     private EmprestimoRequestDTO requestDTO;
 
     private String token;
 
+    /**
+     * Configura o ambiente de teste antes de cada teste.
+     */
     @BeforeEach
     void setUp() {
         beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
@@ -68,9 +75,15 @@ public class EmprestimoControllerTest {
         token        = TestUtils.obterToken(mockMvc, objectMapper);
     }
 
+    /**
+     * Teste para verificar a criação de um empréstimo.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + " - Deve criar um novo empréstimo")
     void inserir_DeveCriarEmprestimo() throws Exception {
-
         mockMvc.perform(post(BASE_URL)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
@@ -81,9 +94,15 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$.porcentagem").value(EmprestimoUtil.PORCENTAGEM20));
     }
 
+    /**
+     * Teste para verificar a criação de um empréstimo com campos vazios.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + " - Deve retornar BadRequest ao tentar criar um empréstimo com campos vazios")
     void inserir_CamposVazios_BadRequest() throws Exception {
-
         mockMvc.perform(post(BASE_URL)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
@@ -91,9 +110,15 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Teste para verificar a criação de um empréstimo com beneficiário inexistente.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + " - Deve retornar NotFound ao tentar criar um empréstimo com beneficiário inexistente")
     void inserir_BeneficiarioNaoExiste_NotFound() throws Exception {
-
         requestDTO.setBeneficiarioId(TestUtils.ID_INEXISTENTE);
 
         mockMvc.perform(post(BASE_URL)
@@ -103,9 +128,15 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Teste para verificar a atualização de um empréstimo.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + "/{id} - Deve atualizar um empréstimo existente")
     void atualizar_DeveAtualizarEmprestimo() throws Exception {
-
         requestDTO.setValorEmprestimo(TestUtils.VALOR3000);
         requestDTO.setPorcentagem(EmprestimoUtil.PORCENTAGEM20);
 
@@ -119,9 +150,15 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$.porcentagem").value(emprestimo.getPorcentagem()));
     }
 
+    /**
+     * Teste para verificar a atualização de um empréstimo com ID inválido.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Te/{id}ste de integração do endpoint " + BASE_URL + " - Deve retornar BadRequest ao tentar atualizar um empréstimo com ID inválido")
     void atualizar_IdInvalidoDeveLancarExcecao_BadRequest() throws Exception {
-
         mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INVALIDO)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
@@ -129,9 +166,15 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    /**
+     * Teste para verificar a atualização de um empréstimo com ID inexistente.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Te/{id}ste de integração do endpoint " + BASE_URL + " - Deve retornar NotFound ao tentar atualizar um empréstimo com ID inexistente")
     void atualizar_IdInexistenteDeveLancarExcecao_NotFound() throws Exception {
-
         mockMvc.perform(put(BASE_URL.concat("/{id}"), TestUtils.ID_INEXISTENTE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) 
                 .contentType(MediaType.APPLICATION_JSON)
@@ -139,9 +182,15 @@ public class EmprestimoControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Teste para verificar a busca de um empréstimo por ID.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Te/{id}ste de integração do endpoint " + BASE_URL + " - Deve retornar um empréstimo ao buscar por ID")
     void buscarPorId_DeveRetornarEmprestimo() throws Exception {
-
         mockMvc.perform(get(BASE_URL.concat("/{id}"), emprestimo.getId())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isOk())
@@ -150,7 +199,14 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$.porcentagem").value(emprestimo.getPorcentagem()));
     }
 
+    /**
+     * Teste para verificar a busca de todos os empréstimos.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + " - Deve retornar uma lista de empréstimos")
     void buscarTodos_DeveRetornarListaDeEmprestimos() throws Exception {
         mockMvc.perform(get(BASE_URL)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
@@ -158,11 +214,17 @@ public class EmprestimoControllerTest {
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))));
     }
 
+    /**
+     * Teste para verificar a remoção de um empréstimo.
+     *
+     * @throws Exception se ocorrer um erro ao executar a solicitação.
+     */
+    @Transactional
     @Test
+    @DisplayName("Te/{id}ste de integração do endpoint " + BASE_URL + " - Deve remover um empréstimo existente")
     void remover_DeveRemoverEmprestimo() throws Exception {
         mockMvc.perform(delete(BASE_URL.concat("/{id}"), emprestimo.getId())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token) )
                 .andExpect(status().isNoContent());
     }
-    
 }

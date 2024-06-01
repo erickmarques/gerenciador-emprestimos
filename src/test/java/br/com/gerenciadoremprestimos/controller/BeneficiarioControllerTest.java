@@ -182,7 +182,7 @@ public class BeneficiarioControllerTest {
      */
     @Transactional
     @Test
-    @DisplayName("Teste de integração do endpoint " + BASE_URL + " - Deve retornar a lista de beneficiários pelo nome")
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + "/buscarPorNome/{nome} - Deve retornar a lista de beneficiários pelo nome")
     void buscarPorNome_DeveRetornarListaDeBeneficiarios() throws Exception {
 
         mockMvc.perform(get(BASE_URL.concat("/buscarPorNome/{nome}"), BeneficiarioUtil.NOME_PESQUISA)
@@ -198,7 +198,7 @@ public class BeneficiarioControllerTest {
      */
     @Transactional
     @Test
-    @DisplayName("Teste de integração/{id} - do endpoint " + BASE_URL + " - Deve remover um beneficiário existente")
+    @DisplayName("Teste de integração do endpoint " + BASE_URL + " - Deve remover um beneficiário existente")
     void remover_DeveRemoverBeneficiario() throws Exception {
         mockMvc.perform(delete(BASE_URL.concat("/{id}"), beneficiario.getId())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token))
