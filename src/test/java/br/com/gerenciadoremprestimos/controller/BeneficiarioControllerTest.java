@@ -26,6 +26,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 /**
  * Classe de teste de integração do BeneficiarioController.
  */
@@ -57,7 +58,6 @@ public class BeneficiarioControllerTest {
      */
     @BeforeEach
     void setUp() {
-
         beneficiario = BeneficiarioUtil.criarBeneficiarioPadrao();
 	  
         beneficiarioRepository.save(beneficiario);
